@@ -10,6 +10,8 @@ import { getDeviceFoldRects } from "./utils/device-gemoetry.js";
 
 import { fetchCSSText, debounnce } from "./utils/misc.js";
 
+
+// polyfill configuration related variables
 let spanning =
   sessionStorage.getItem(`${POLYFILL_NAMESPACE}-spanning`) ||
   SPANNING_MF_VAL_NONE;
@@ -27,17 +29,26 @@ let cssElements = Array.from(
   document.querySelectorAll('link[rel="stylesheet"], style')
 );
 
+// original page CSS
 let cssText = "";
 
-let editedCSSText = {
-  all: ""
-};
+/**
+ * modified page CSS text: env(fold-*) variables replaced, (spanning: *) media query replaced
+ * grouped in this object as:
+ * -- all: all non-spanning page styles
+ * -- single-fold-vertical: CSS found in the media feature (spanning: single-fold-vertical)
+ * -- single-fold-horizontal: CSS found in the media feature (spanning: single-fold-horizontal)
+ * -- none: CSS found in the media feature (spanning: none)
+ */
+let editedCSSText = {};
 
 fetchCSSText(cssElements).then(sheetsTextContentArray => {
   cssText = sheetsTextContentArray.join("\n");
 
+  // all other css excluding spanning media blocks
   editedCSSText.all = replaceSpanningMediaBlocks(cssText, "");
 
+  // spanning media blocks grouped by spanning type (single-fold-horizontal, vertical or none)
   let spanningCSSText = getSpanningCSSText(cssText);
   editedCSSText = Object.assign(editedCSSText, spanningCSSText);
 
@@ -47,12 +58,18 @@ fetchCSSText(cssElements).then(sheetsTextContentArray => {
   polyfilledStyles.textContent = editedCSSText.all;
   document.head.appendChild(polyfilledStyles);
 
+  // insert spanning media query styelsheet
+  insertSpanningStyles();
+
+  // global configs, accessible via the window object
   Object.defineProperty(window, POLYFILL_NAMESPACE, {
     value: configs
   });
 
   window.addEventListener("resize", debounnce(insertSpanningStyles, 150));
-
+  
+  // web-based emulator runs this polyfill in an iframe, we need to communicate
+  // emulator state changes to the site
   window.addEventListener("message", evt => {
     let action = evt.data.action || "";
     let value = evt.data.value || {};
@@ -61,9 +78,9 @@ fetchCSSText(cssElements).then(sheetsTextContentArray => {
     }
   });
 
-  insertSpanningStyles();
 });
 
+// looks at configs and appends the correct `spanning` styles
 function insertSpanningStyles() {
   Array.from(document.querySelectorAll(`.${POLYFILL_NAMESPACE}`)).forEach(el =>
     el.parentElement.removeChild(el)
