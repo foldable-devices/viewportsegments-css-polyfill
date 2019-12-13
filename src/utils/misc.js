@@ -20,7 +20,7 @@ export function fetchCSSText(elements) {
 
 /**
  * Returns a function that won't call `fn` if it was invoked at a faster interval than `wait`
- * 
+ *
  * @param {Function} fn
  * @param {Number} wait - milliseconds
  */

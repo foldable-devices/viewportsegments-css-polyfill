@@ -1,4 +1,9 @@
-import { SPANNING_MF_KEY, SPANNING_MF_VAL_HOR, SPANNING_MF_VAL_VER, SPANNING_MF_VAL_NONE } from "../constants.js";
+import {
+  SPANNING_MF_KEY,
+  SPANNING_MF_VAL_HOR,
+  SPANNING_MF_VAL_VER,
+  SPANNING_MF_VAL_NONE
+} from "../constants.js";
 
 const SPANNING_MEDIA_BLOCK_REGEXP_STR = `(@media.*?\\b${SPANNING_MF_KEY}\\b[^{]+)\\{([\\s\\S]+?\\})\\s*\\}`;
 
@@ -12,7 +17,7 @@ const cssEnvVariableRegExpMaker = variable => {
 
 /**
  * Finds and returns an array of `@media` blocks with containing spanning media feature
- * 
+ *
  * @param {string} cssText
  *
  * @returns {string[]}
@@ -30,7 +35,7 @@ export function _processSpanningMediaBlock(cssText) {
 
 /**
  * Replaces spanning `@media` blocks containning `spanning` feature and returns a new string
- * 
+ *
  * @param {String} originalSheetStr
  * @param {String} replaceWith
  *
@@ -45,11 +50,11 @@ export function replaceSpanningMediaBlocks(originalSheetStr, replaceWith) {
 
 /**
  * Replaces a word in a string and returns a new string
- * 
- * @param {String} originalSheetStr 
- * @param {String} cssEnvVariable 
- * @param {String} replaceWith 
- * 
+ *
+ * @param {String} originalSheetStr
+ * @param {String} cssEnvVariable
+ * @param {String} replaceWith
+ *
  * @returns {String}
  */
 export function replaceCSSEnvVariables(
@@ -65,9 +70,9 @@ export function replaceCSSEnvVariables(
 
 /**
  * Returns an array of media features found a string sucb as `(min-width: ..)`, `(orientation:..)` etc..
- * 
- * @param {String[]} mediaQueryStr 
- * 
+ *
+ * @param {String[]} mediaQueryStr
+ *
  * @returns {String[]}
  */
 export function _getMediaFeatures(mediaQueryStr) {
@@ -75,11 +80,11 @@ export function _getMediaFeatures(mediaQueryStr) {
 }
 
 /**
- * Returns an array containing `@media` and following media types such as screen, all, print, etc. 
+ * Returns an array containing `@media` and following media types such as screen, all, print, etc.
  * up until the first media feature parentheses
- * 
- * @param {*} mediaQueryStr 
- * 
+ *
+ * @param {*} mediaQueryStr
+ *
  * @returns {String[]}
  */
 export function _getMediaTypes(mediaQueryStr) {
@@ -89,8 +94,8 @@ export function _getMediaTypes(mediaQueryStr) {
 /**
  * Finds all spanning media queries in CSS text and returns an object of all media
  * queries grouped by type
- * 
- * @param {*} cssText 
+ *
+ * @param {*} cssText
  */
 export function getSpanningCSSText(cssText) {
   let spanningMediaBlocks = _processSpanningMediaBlock(cssText);

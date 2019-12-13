@@ -1,7 +1,4 @@
-import {
-  SPANNING_MF_VAL_NONE,
-  POLYFILL_NAMESPACE
-} from "./constants.js";
+import { SPANNING_MF_VAL_NONE, POLYFILL_NAMESPACE } from "./constants.js";
 
 import {
   getSpanningCSSText,
