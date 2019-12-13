@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Basic Demo</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        height: 100%;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      .wrapper {
+        display: flex;
+        height: 100%;
+        width: 100%;
+      }
+
+      .col1 {
+        flex: 0 0 400px;
+        background: mediumaquamarine;
+      }
+
+      .col2 {
+        flex: 1;
+        background: papayawhip;
+      }
+
+      .col1:before {
+        content: "not spanning";
+      }
+      .col2:before {
+        content: "not spanning";
+      }
+
+      @media (spanning: single-fold-vertical) {
+        .col1 {
+          flex: 0 0 env(fold-left);
+        }
+        .col1:before {
+          content: "spanning single-fold-vertical";
+        }
+        .col2:before {
+          content: "spanning single-fold-vertical";
+        }
+      }
+
+      @media (spanning: single-fold-vertical) and (max-width: 700px) {
+        .col1 {
+          background: coral;
+          flex: 0 0 env(fold-left);
+        }
+        .col1:before {
+          content: "spanning single-fold-vertical and max-width is 700px";
+        }
+        .col2:before {
+          content: "spanning single-fold-vertical and max-width is 700px";
+        }
+      }
+
+      @media (spanning: single-fold-horizontal) {
+        .wrapper {
+          flex-direction: column;
+        }
+
+        .col1 {
+          flex: 0 0 env(fold-top);
+        }
+        .col1:before {
+          content: "spanning single-fold-horizontal";
+        }
+        .col2:before {
+          content: "spanning single-fold-horizontal";
+        }
+      }
+
+      @media (spanning: none) {
+        .col1:before {
+          content: "spanning:none";
+        }
+        .col2:before {
+          content: "spanning:none";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="col1"></div>
+      <div class="col2"></div>
+    </div>
+
+    <script src="../../dist/spanning-css-polyfill.js"></script>
+  </body>
+</html>
