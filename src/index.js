@@ -44,6 +44,8 @@ if (typeof window[POLYFILL_NAMESPACE] === "undefined") {
       window[POLYFILL_NAMESPACE].update(value);
     }
   });
+} else {
+  window[POLYFILL_NAMESPACE].onupdate.push(insertSpanningStyles);
 }
 
 let cssElements = Array.from(
@@ -70,7 +72,6 @@ let spanning = {
 fetchCSSText(cssElements).then(sheetsTextContentArray => {
   let styleFragment = new DocumentFragment();
   sheetsTextContentArray.forEach((sheet, i) => {
-
     // all other css excluding spanning media blocks
     let noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
     let spanningCSS = getSpanningCSSText(sheet);
