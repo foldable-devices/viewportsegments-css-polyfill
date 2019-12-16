@@ -31,3 +31,22 @@ export function debounnce(fn, wait) {
     timeout = setTimeout(() => fn.apply(this, arguments), wait);
   };
 }
+
+/**
+ * 
+ * @param {String} name 
+ * @param {Object} attributes 
+ * @param {String} content 
+ * 
+ * @return {DOM Node}
+ */
+export function createElement(name, attributes, content) {
+  let el = document.createElement(name);
+  Object.keys(attributes).forEach(k => {
+    el.setAttribute( k, attributes[k] )
+  })
+  if( typeof content !== 'undefined') {
+    el.textContent = content
+  }
+  return el;
+}
