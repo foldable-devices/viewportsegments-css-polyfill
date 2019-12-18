@@ -20,9 +20,9 @@ if (typeof window[POLYFILL_NAMESPACE] === "undefined") {
   let spanning =
     sessionStorage.getItem(`${POLYFILL_NAMESPACE}-spanning`) ||
     SPANNING_MF_VAL_NONE;
-  let foldSize = sessionStorage.getItem(`${POLYFILL_NAMESPACE}-foldSize`) || 0;
+  let foldSize = +sessionStorage.getItem(`${POLYFILL_NAMESPACE}-foldSize`) || 0;
   let browserShellSize =
-    sessionStorage.getItem(`${POLYFILL_NAMESPACE}-browserShellSize`) || 0;
+    +sessionStorage.getItem(`${POLYFILL_NAMESPACE}-browserShellSize`) || 0;
   // global configs, accessible via the window object
   Object.defineProperty(window, POLYFILL_NAMESPACE, {
     value: {
