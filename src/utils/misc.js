@@ -9,7 +9,7 @@
 export function fetchCSSText(elements) {
   return Promise.all(
     elements.map(element => {
-      let href = element.href;
+      const href = element.href;
       if (href) {
         return fetch(href).then(r => r.text());
       }
@@ -19,12 +19,13 @@ export function fetchCSSText(elements) {
 }
 
 /**
- * Returns a function that won't call `fn` if it was invoked at a faster interval than `wait`
+ * Returns a function that won't call `fn` if it was invoked at a
+ * faster interval than `wait`
  *
  * @param {Function} fn
  * @param {Number} wait - milliseconds
  */
-export function debounnce(fn, wait) {
+export function debounce(fn, wait) {
   let timeout;
   return function() {
     clearTimeout(timeout);
@@ -33,20 +34,20 @@ export function debounnce(fn, wait) {
 }
 
 /**
- * 
- * @param {String} name 
- * @param {Object} attributes 
- * @param {String} content 
- * 
+ *
+ * @param {String} name
+ * @param {Object} attributes
+ * @param {String} content
+ *
  * @return {DOM Node}
  */
 export function createElement(name, attributes, content) {
-  let el = document.createElement(name);
+  const el = document.createElement(name);
   Object.keys(attributes).forEach(k => {
-    el.setAttribute( k, attributes[k] )
+    el.setAttribute(k, attributes[k])
   })
-  if( typeof content !== 'undefined') {
-    el.textContent = content
+  if (typeof content !== typeof(undefined)) {
+    el.textContent = content;
   }
   return el;
 }

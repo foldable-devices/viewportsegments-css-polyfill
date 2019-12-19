@@ -1,6 +1,6 @@
 import {
-  SPANNING_MF_VAL_NONE,
   POLYFILL_NAMESPACE,
+  SPANNING_MF_VAL_NONE,
   SPANNING_MF_VAL_VER,
   SPANNING_MF_VAL_HOR
 } from "./constants.js";
@@ -11,17 +11,18 @@ import {
   replaceCSSEnvVariables
 } from "./utils/css-text-processors.js";
 
-import { getDeviceFoldRects } from "./utils/device-gemoetry.js";
+import { getDeviceFoldRects } from "./utils/device-geometry.js";
 
-import { fetchCSSText, debounnce, createElement } from "./utils/misc.js";
+import { fetchCSSText, debounce, createElement } from "./utils/misc.js";
 
-if (typeof window[POLYFILL_NAMESPACE] === "undefined") {
+if (typeof window[POLYFILL_NAMESPACE] === typeof(undefined)) {
   // polyfill configuration related variables
-  let spanning =
+  const spanning =
     sessionStorage.getItem(`${POLYFILL_NAMESPACE}-spanning`) ||
     SPANNING_MF_VAL_NONE;
-  let foldSize = +sessionStorage.getItem(`${POLYFILL_NAMESPACE}-foldSize`) || 0;
-  let browserShellSize =
+  const foldSize =
+    +sessionStorage.getItem(`${POLYFILL_NAMESPACE}-foldSize`) || 0;
+  const browserShellSize =
     +sessionStorage.getItem(`${POLYFILL_NAMESPACE}-browserShellSize`) || 0;
   // global configs, accessible via the window object
   Object.defineProperty(window, POLYFILL_NAMESPACE, {
@@ -34,12 +35,12 @@ if (typeof window[POLYFILL_NAMESPACE] === "undefined") {
     }
   });
 
-  // web-based emulator runs this polyfill in an iframe, we need to communicate
-  // emulator state changes to the site
-  // should only be registered once (in CSS or JS polyfill not both)
+  // Web-based emulator runs this polyfill in an iframe, we need to
+  // communicate emulator state changes to the site.
+  // Should only be registered once (in CSS or JS polyfill not both)
   window.addEventListener("message", evt => {
-    let action = evt.data.action || "";
-    let value = evt.data.value || {};
+    const action = evt.data.action || "";
+    const value = evt.data.value || {};
     if (action === "update") {
       window[POLYFILL_NAMESPACE].update(value);
     }
@@ -48,7 +49,7 @@ if (typeof window[POLYFILL_NAMESPACE] === "undefined") {
   window[POLYFILL_NAMESPACE].onupdate.push(insertSpanningStyles);
 }
 
-let cssElements = Array.from(
+const cssElements = Array.from(
   document.querySelectorAll('link[rel="stylesheet"], style')
 );
 
@@ -56,30 +57,30 @@ let cssElements = Array.from(
 //let cssText = "";
 
 /**
- * modified page CSS text: env(fold-*) variables replaced, (spanning: *) media query replaced
+ * modified page CSS text: env(fold-*) variables replaced (spanning: *) media query replaced
  * grouped in this object as:
  *
  * -- single-fold-vertical: CSS found in the media feature (spanning: single-fold-vertical)
  * -- single-fold-horizontal: CSS found in the media feature (spanning: single-fold-horizontal)
  * -- none: CSS found in the media feature (spanning: none)
  */
-let spanning = {
+const spanning = {
   [SPANNING_MF_VAL_HOR]: "",
   [SPANNING_MF_VAL_VER]: "",
   [SPANNING_MF_VAL_NONE]: ""
 };
 
 fetchCSSText(cssElements).then(sheetsTextContentArray => {
-  let styleFragment = new DocumentFragment();
+  const styleFragment = new DocumentFragment();
   sheetsTextContentArray.forEach((sheet, i) => {
     // all other css excluding spanning media blocks
-    let noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
-    let spanningCSS = getSpanningCSSText(sheet);
+    const noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
+    const spanningCSS = getSpanningCSSText(sheet);
 
-    let sheetOrigin = cssElements[i].href || "inline";
+    const sheetOrigin = cssElements[i].href || "inline";
 
     Object.keys(spanningCSS).forEach(k => {
-      if (typeof spanning[k] !== "undefined") {
+      if (typeof spanning[k] !== typeof(undefined)) {
         spanning[k] += `
           /* origin:  ${sheetOrigin} */
           ${spanningCSS[k]}`;
@@ -91,7 +92,7 @@ fetchCSSText(cssElements).then(sheetsTextContentArray => {
     );
   });
 
-  // spanning media blocks grouped by spanning type (single-fold-horizontal, vertical or none)
+  // Spanning media blocks grouped by spanning type (single-fold-horizontal, vertical or none)
   // let spanningCSSText = getSpanningCSSText(cssText);
   // editedCSSText = Object.assign(editedCSSText, spanningCSSText);
 
@@ -99,10 +100,10 @@ fetchCSSText(cssElements).then(sheetsTextContentArray => {
 
   document.head.appendChild(styleFragment);
 
-  // insert spanning media query styelsheet
+  // insert spanning media query stylesheet
   insertSpanningStyles();
 
-  window.addEventListener("resize", debounnce(insertSpanningStyles, 150));
+  window.addEventListener("resize", debounce(insertSpanningStyles, 150));
 });
 
 // looks at configs and appends the correct `spanning` styles
