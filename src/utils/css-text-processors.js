@@ -23,18 +23,20 @@ const cssEnvVariableRegExpMaker = variable => {
  * @returns {string[]}
  */
 export function _processSpanningMediaBlock(cssText) {
-  let regex = new RegExp(SPANNING_MEDIA_BLOCK_REGEXP_STR, "gi");
+  const regex = new RegExp(SPANNING_MEDIA_BLOCK_REGEXP_STR, "gi");
 
-  // mathAll is not yet supported in Safari but shipped in Edge, Chrome and FF
+  // matchAll is not yet supported in Safari, but shipped in Edge, Chrome and FF
   // Accoding to Babel docs: https://babeljs.io/docs/en/babel-preset-env#shippedproposals
-  // setting {useBuiltIns: "usage"} will use the browser shipped version than the transpiled
-  let spanningMediaBlocks = Array.from(cssText.matchAll(regex));
+  // setting {useBuiltIns: "usage"} will use the browser shipped version rather than
+  // the transpiled version.
+  const spanningMediaBlocks = Array.from(cssText.matchAll(regex));
 
   return spanningMediaBlocks;
 }
 
 /**
- * Replaces spanning `@media` blocks containning `spanning` feature and returns a new string
+ * Replaces spanning `@media` blocks containing `spanning` feature
+ * and returns a new stylesheet string
  *
  * @param {String} originalSheetStr
  * @param {String} replaceWith
@@ -69,7 +71,8 @@ export function replaceCSSEnvVariables(
 }
 
 /**
- * Returns an array of media features found a string sucb as `(min-width: ..)`, `(orientation:..)` etc..
+ * Returns an array of media features found a string sucb as
+ * `(min-width: ..)`, `(orientation:..)` etc.
  *
  * @param {String[]} mediaQueryStr
  *
@@ -80,8 +83,8 @@ export function _getMediaFeatures(mediaQueryStr) {
 }
 
 /**
- * Returns an array containing `@media` and following media types such as screen, all, print, etc.
- * up until the first media feature parentheses
+ * Returns an array containing `@media` and following media types such
+ * as screen, all, print, etc. up until the first media feature parenthesis
  *
  * @param {*} mediaQueryStr
  *
@@ -93,34 +96,34 @@ export function _getMediaTypes(mediaQueryStr) {
 
 /**
  * Finds all spanning media queries in CSS text and returns an object of all media
- * queries grouped by type
+ * queries, grouped by type
  *
  * @param {*} cssText
  */
 export function getSpanningCSSText(cssText) {
-  let spanningMediaBlocks = _processSpanningMediaBlock(cssText);
+  const spanningMediaBlocks = _processSpanningMediaBlock(cssText);
 
-  let result = {
+  const result = {
     [SPANNING_MF_VAL_HOR]: "",
     [SPANNING_MF_VAL_VER]: "",
     [SPANNING_MF_VAL_NONE]: ""
   };
 
   spanningMediaBlocks.forEach(block => {
-    let defintion = block[1];
-    let content = block[2];
+    const definition = block[1];
+    const content = block[2];
 
     //TODO: this is bad.
     let spanningValue = SPANNING_MF_VAL_NONE;
-    if (defintion.indexOf(SPANNING_MF_VAL_HOR) > -1) {
+    if (definition.indexOf(SPANNING_MF_VAL_HOR) > -1) {
       spanningValue = SPANNING_MF_VAL_HOR;
     }
-    if (defintion.indexOf(SPANNING_MF_VAL_VER) > -1) {
+    if (definition.indexOf(SPANNING_MF_VAL_VER) > -1) {
       spanningValue = SPANNING_MF_VAL_VER;
     }
 
-    let mediaTypes = _getMediaTypes(defintion);
-    let mediaFeatures = _getMediaFeatures(defintion);
+    const mediaTypes = _getMediaTypes(definition);
+    let mediaFeatures = _getMediaFeatures(definition);
 
     mediaFeatures = mediaFeatures
       .filter(f => !f.includes(SPANNING_MF_KEY))
