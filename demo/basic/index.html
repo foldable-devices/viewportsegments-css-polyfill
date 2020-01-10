@@ -24,13 +24,15 @@
       }
 
       .col1 {
-        flex: 0 0 400px;
-        background: mediumaquamarine;
+        flex: 0 0 200px;
+        background-color: lightgray;
+        transition: background-color .2s linear;
       }
 
       .col2 {
         flex: 1;
-        background: papayawhip;
+        background-color: papayawhip;
+        transition: background-color .2s linear;
       }
 
       .col1:before {
@@ -44,25 +46,18 @@
         .col1 {
           flex: 0 0 env(fold-left);
           margin-right: env(fold-width);
+          background-color: steelblue;
         }
-        .col1:before {
-          content: "spanning single-fold-vertical";
-        }
-        .col2:before {
-          content: "spanning single-fold-vertical";
-        }
-      }
 
-      @media (spanning: single-fold-vertical) and (max-width: 700px) {
-        .col1 {
-          background: coral;
-          flex: 0 0 env(fold-left);
+        .col2 {
+          background-color: yellow;
         }
+
         .col1:before {
-          content: "spanning single-fold-vertical and max-width is 700px";
+          content: "spanning single-fold-vertical";
         }
         .col2:before {
-          content: "spanning single-fold-vertical and max-width is 700px";
+          content: "spanning single-fold-vertical";
         }
       }
 
@@ -73,7 +68,14 @@
 
         .col1 {
           flex: 0 0 env(fold-top);
+          margin-bottom: env(fold-height);
+          background-color: pink;
         }
+
+        .col2 {
+          background-color: seagreen;
+        }
+
         .col1:before {
           content: "spanning single-fold-horizontal";
         }

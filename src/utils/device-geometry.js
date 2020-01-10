@@ -27,7 +27,7 @@ export function getDeviceFoldRects(configs) {
     width = window.innerWidth;
     height = configs.foldSize;
     top =
-      window.innerHeight / 2 - configs.foldSize / 2 - configs.browserShellSize;
+      ((window.innerHeight - configs.browserShellSize) / 2) - (configs.foldSize / 2);
   }
   return {
     [CSS_ENV_FOLD_TOP]: top,
