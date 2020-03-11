@@ -25,12 +25,15 @@ const cssEnvVariableRegExpMaker = variable => {
 export function _processSpanningMediaBlock(cssText) {
   const regex = new RegExp(SPANNING_MEDIA_BLOCK_REGEXP_STR, "gi");
 
-  // matchAll is not yet supported in Safari, but shipped in Edge, Chrome and FF
-  // Accoding to Babel docs: https://babeljs.io/docs/en/babel-preset-env#shippedproposals
-  // setting {useBuiltIns: "usage"} will use the browser shipped version rather than
-  // the transpiled version.
-  const spanningMediaBlocks = Array.from(cssText.matchAll(regex));
+  let spanningMediaBlocks;
+  if(typeof cssText.matchAll === "function") {
+    spanningMediaBlocks = Array.from(cssText.matchAll(regex));
+  }else{
+    spanningMediaBlocks = [];
 
+    while(spanningMediaBlocks[spanningMediaBlocks.length]=regex.exec(cssText));
+    spanningMediaBlocks.length--;
+  }
   return spanningMediaBlocks;
 }
 
