@@ -53,9 +53,6 @@ const cssElements = Array.from(
   document.querySelectorAll('link[rel="stylesheet"], style')
 );
 
-// original page CSS
-//let cssText = "";
-
 /**
  * modified page CSS text: env(fold-*) variables replaced (spanning: *) media query replaced
  * grouped in this object as:
@@ -69,6 +66,34 @@ const spanning = {
   [SPANNING_MF_VAL_VER]: "",
   [SPANNING_MF_VAL_NONE]: ""
 };
+
+export function adjustCSS(elementName, sheet) {
+  const noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
+  const spanningCSS = getSpanningCSSText(sheet);
+
+  spanning[elementName] = {
+    [SPANNING_MF_VAL_HOR]: "",
+    [SPANNING_MF_VAL_VER]: "",
+    [SPANNING_MF_VAL_NONE]: ""
+  };
+
+  Object.keys(spanningCSS).forEach(k => {
+    if (typeof spanning[elementName][k] !== typeof(undefined)) {
+      spanning[elementName][k] += `
+        /* origin: ${elementName} */
+        ${spanningCSS[k]}`;
+    }
+  });
+
+  spanning[elementName]["non-spanning"] = noSpanningCSS;
+  return noSpanningCSS;
+}
+
+export function observe(element) {
+  insertSpanningStyles(element);
+  window.addEventListener("resize", key => debounce(element => insertSpanningStyles(element), 150));
+  window[POLYFILL_NAMESPACE].onupdate.push(() => insertSpanningStyles(element));
+}
 
 fetchCSSText(cssElements).then(sheetsTextContentArray => {
   const styleFragment = new DocumentFragment();
@@ -103,19 +128,31 @@ fetchCSSText(cssElements).then(sheetsTextContentArray => {
   // insert spanning media query stylesheet
   insertSpanningStyles();
 
-  window.addEventListener("resize", debounce(insertSpanningStyles, 150));
+  window.addEventListener("resize", () => debounce(insertSpanningStyles, 150));
 });
 
 // looks at configs and appends the correct `spanning` styles
-function insertSpanningStyles() {
-  Array.from(document.querySelectorAll(`.${POLYFILL_NAMESPACE}`)).forEach(el =>
-    el.parentElement.removeChild(el)
-  );
+function insertSpanningStyles(element) {
+  if (element) {
+    Array.from(element.shadowRoot.querySelectorAll(`.${POLYFILL_NAMESPACE}`)).forEach(el =>
+      el.parentNode.removeChild(el)
+    );
+  } else {
+    Array.from(document.querySelectorAll(`.${POLYFILL_NAMESPACE}`)).forEach(el =>
+      el.parentElement.removeChild(el)
+    );
+  }
   let configs = window[POLYFILL_NAMESPACE];
 
   if (configs.spanning === SPANNING_MF_VAL_NONE) return;
 
-  let spanningCSSText = spanning[configs.spanning];
+  let spanningCSSText = element ?
+    spanning[element.nodeName.toLowerCase()][configs.spanning] :
+    spanning[configs.spanning];
+
+  let noSpanningCSSText = element ?
+    spanning[element.nodeName.toLowerCase()]["non-spanning"] : null;
+
   let rects = getDeviceFoldRects(configs);
 
   Object.keys(rects).forEach(r => {
@@ -129,7 +166,16 @@ function insertSpanningStyles() {
   let polyfilledStyles = document.createElement("style");
   polyfilledStyles.className = POLYFILL_NAMESPACE;
   polyfilledStyles.textContent = spanningCSSText;
-  document.head.appendChild(polyfilledStyles);
+  if (element) {
+    const shadowRoot = element.shadowRoot;
+    if ("adoptedStyleSheets" in shadowRoot && shadowRoot.adoptedStyleSheets.length > 0) {
+      shadowRoot.adoptedStyleSheets[0].replace(noSpanningCSSText + spanningCSSText);
+    } else {
+      shadowRoot.appendChild(polyfilledStyles);
+    }
+  } else {
+    document.head.appendChild(polyfilledStyles);
+  }
 }
 
 const VALID_CONFIG_PROPS = new Set([
