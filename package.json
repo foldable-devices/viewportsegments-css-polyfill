@@ -3,23 +3,26 @@
   "version": "1.0.0",
   "description": "Polyfill for CSS spanning media query",
   "source": "src/index.js",
-  "main": "dist/spanning-css-polyfill.js",
+  "module": "dist/spanning-css-polyfill.js",
   "directories": {
     "test": "tests"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.7.4",
-    "@babel/register": "^7.7.4",
-    "concurrently": "^5.0.0",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
+    "@babel/register": "^7.9.0",
+    "concurrently": "^5.1.0",
     "microbundle": "^0.11.0",
-    "serve": "^11.2.0",
-    "tape": "^4.11.0"
+    "serve": "^11.3.0",
+    "tape": "^4.11.0",
+    "copyfiles": "^2.2.0",
+    "jsdoc": "^3.6.3"
   },
   "scripts": {
-    "build": "microbundle -f iife",
-    "dev": "concurrently serve \"microbundle watch -f iife\"",
-    "test": "tape -r @babel/register tests/*.js"
+    "build": "microbundle -f es",
+    "dev": "concurrently serve \"microbundle -f es watch\"",
+    "test": "tape -r @babel/register tests/*.js",
+    "generate-docs": "jsdoc -d docs/ src/index.js README.md && copyfiles images/* docs/"
   },
   "babel": {
     "plugins": [
