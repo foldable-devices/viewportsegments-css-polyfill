@@ -144,8 +144,6 @@ function insertSpanningStyles(element) {
   }
   let configs = window[POLYFILL_NAMESPACE];
 
-  if (configs.spanning === SPANNING_MF_VAL_NONE) return;
-
   let spanningCSSText = element ?
     spanning[element.nodeName.toLowerCase()][configs.spanning] :
     spanning[configs.spanning];
