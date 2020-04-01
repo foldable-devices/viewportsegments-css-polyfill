@@ -10,7 +10,7 @@ extensions provides a mean to do that using stylesheets.
 
 The `spanning` CSS media feature can be used to test whether the browser window is spanning across multiple diplays.
 
-![Figure showing 2 foldable devices with different hinge postures](images/spanning-media-query.svg)
+![Figure showing 2 foldable devices with different hinge postures](https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/spanning-media-query.svg?sanitize=true)
 
 #### Syntax
 
@@ -32,7 +32,7 @@ This value describes the state of when the browser window is not in spanning mod
 
 A map application that presents a map on one window segment and search results on another
 
-![Foldable with the left segment of the window containing a map and the right segment containing list of search results](images/map-app.svg)
+![Foldable with the left segment of the window containing a map and the right segment containing list of search results](https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/map-app.svg?sanitize=true)
 
 ```css
 @media (spanning: single-fold-vertical) {
@@ -59,7 +59,7 @@ There are 4 pre-defined CSS environment variables, which can be used to calculat
 - **fold-width**
 - **fold-height**
 
-![predefined environment variables](images/css-env-variables.svg)
+![predefined environment variables](https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/css-env-variables.svg?sanitize=true)
 
 While the spanning media query guarantees there is only a single hinge and two screen segments, developers must not take a dependency that each screen segment is 50% of the viewport height or width, as that may not always be the case.
 
