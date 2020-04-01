@@ -71,10 +71,16 @@ When evaluated while not in one of the spanning states, these values will be tre
 How to use the polyfill
 ===
 
-Add the polyfill to your project
+This polyfill is packaged as a JavaScript module.
 
 ```html
-<script src="spanning-css-polyfill.js"></script>
+<script type="module" src="spanning-css-polyfill.js"></script>
+```
+
+or in your JavaScript source file
+
+```js
+import { update } from "spanning-css-polyfill/spanning-css-polyfill.js";
 ```
 
 and start using the new CSS features.
@@ -85,21 +91,53 @@ In order to change the display configuration, you can use the polyfill together 
 
 #### Manually changing the display configuration
 
-The configuration object is available as
-
-```js
-  const config = window["__foldables_env_vars__"];
-```
-
 You can update values such as `spanning`, `foldSize` and `browserShellSize` by calling the `update` method:
 
 ```js
-  config.update({
+  update({
     spanning: "single-fold-horizontal",
     foldSize: 30,
     browserShellSize: 20
   });
 ```
+
+#### Special note on web components and lit-element
+In order for the polyfill to work with web components and lit-element, a bit of extra work is needed. There are a couple of examples in the `demo/` directory.
+
+The polyfill provides two methods, one to register and one to observe and adjust to updates.
+
+```js
+import { adjustCSS, observe } from "spanning-css-polyfill/spanning-css-polyfill.js";
+```
+
+In the constructor of your web component make sure to pre-process and make the CSS browser valid by calling the `adjustCSS` method:
+
+```js
+let sheet = shadowRoot.querySelector("style");
+sheet.innerText = adjustCSS("test-element", sheet.innerText);
+```
+
+Now to make sure the style is updated whenever the configuration changes you need to add in your component class:
+```js
+  connectedCallback() {
+    observe(this);
+  }
+```
+Please note that if connectedCallback() exists on the parent, don't forget to call `super.connectedCallback()`.
+
+For lit-element, a bit of extra work is needed if you're styling your element with the `css` template literal (which is the recommended way).
+
+```js
+import { html, css as litCSS, LitElement } from 'https://cdn.pika.dev/lit-element@^2.2.1';
+import { adjustCSS, observe } from "spanning-css-polyfill/spanning-css-polyfill.js";
+
+const css = (strings, ...values) => {
+  const string = adjustCSS("test-element", strings[0]);
+  return litCSS([string], ...values);
+};
+```
+
+The `observe` method is also needed (see above).
 
 Test suite
 ===
