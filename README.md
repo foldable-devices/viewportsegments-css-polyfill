@@ -80,7 +80,7 @@ This polyfill is packaged as a JavaScript module.
 or in your JavaScript source file
 
 ```js
-import { update } from "spanning-css-polyfill/spanning-css-polyfill.js";
+import "spanning-css-polyfill/spanning-css-polyfill.js";
 ```
 
 and start using the new CSS features.
@@ -101,8 +101,8 @@ You can update values such as `spanning`, `foldSize` and `browserShellSize` by c
   });
 ```
 
-#### Special note on web components and lit-element
-In order for the polyfill to work with web components and lit-element, a bit of extra work is needed. There are a couple of examples in the `demo/` directory.
+#### Special note on web components and [lit-element](https://lit-element.polymer-project.org/)
+In order for the polyfill to work with web components and [lit-element](https://lit-element.polymer-project.org/), a bit of extra work is needed. There are a couple of examples in the `demo/` directory.
 
 The polyfill provides two methods, one to register and one to observe and adjust to updates.
 
@@ -139,6 +139,14 @@ const css = (strings, ...values) => {
 
 The `observe` method is also needed (see above).
 
+Documentation
+===
+Located [here](https://foldable-devices.github.io/spanning-css-polyfill/).
+
+Demos
+===
+Head over [here](https://github.com/foldable-devices/demos).
+
 Test suite
 ===
 
@@ -147,7 +155,7 @@ There are unfortunately no [web-platform-tests](https://github.com/w3c/web-platf
 Known issues
 ===
 
-Check GitHub.
+Check GitHub [here](https://github.com/foldable-devices/spanning-css-polyfill/issues).
 
 Learn more
 ===

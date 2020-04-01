@@ -1,12 +1,10 @@
 {
   "name": "spanning-css-polyfill",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Polyfill for CSS spanning media query",
-  "source": "src/index.js",
-  "module": "dist/spanning-css-polyfill.js",
-  "directories": {
-    "test": "tests"
-  },
+  "module": "build/spanning-css-polyfill.js",
+  "main": "build/spanning-css-polyfill.js",
+  "type": "module",
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-transform-modules-commonjs": "^7.9.0",
@@ -19,11 +17,18 @@
     "jsdoc": "^3.6.3"
   },
   "scripts": {
-    "build": "microbundle -f es",
+    "build": "microbundle -f es -o build",
     "dev": "concurrently serve \"microbundle -f es watch\"",
     "test": "tape -r @babel/register tests/*.js",
     "generate-docs": "jsdoc -d docs/ src/index.js README.md && copyfiles images/* docs/"
   },
+  "files": [
+    "!/demo/",
+    "!/images/",
+    "!/src/",
+    "!/tests/",
+    "!/docs/"
+  ],
   "babel": {
     "plugins": [
       "@babel/plugin-transform-modules-commonjs"
