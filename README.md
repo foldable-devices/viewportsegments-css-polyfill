@@ -71,16 +71,24 @@ When evaluated while not in one of the spanning states, these values will be tre
 How to use the polyfill
 ===
 
-This polyfill is packaged as a JavaScript module.
+This polyfill is packaged as a JavaScript module. It is available on NPM over [here](https://www.npmjs.com/package/spanning-css-polyfill). 
+
+To install the polyfill just run:
+
+```bash
+npm install --save spanning-css-polyfill
+```
+
+Then you can include it in your project:
 
 ```html
-<script type="module" src="spanning-css-polyfill.js"></script>
+<script type="module" src="/path/to/modules/spanning-css-polyfill.js"></script>
 ```
 
 or in your JavaScript source file
 
 ```js
-import "spanning-css-polyfill/spanning-css-polyfill.js";
+import "/path/to/modules/spanning-css-polyfill/spanning-css-polyfill.js";
 ```
 
 and start using the new CSS features.
