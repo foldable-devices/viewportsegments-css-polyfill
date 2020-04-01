@@ -113,7 +113,7 @@ export function adjustCSS(elementName, sheet) {
 */
 export function observe(element) {
   insertSpanningStyles(element);
-  window.addEventListener("resize", key => debounce(element => insertSpanningStyles(element), 150));
+  window.addEventListener("resize", () => debounce(insertSpanningStyles(element), 150));
   window[POLYFILL_NAMESPACE].onupdate.push(() => insertSpanningStyles(element));
 }
 
