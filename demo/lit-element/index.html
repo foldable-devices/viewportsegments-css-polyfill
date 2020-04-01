@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Lit Demo</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <test-element></test-element>
+    <script type=module>
+      import { html, css as litCSS, LitElement } from 'https://cdn.pika.dev/lit-element@^2.2.1';
+      import { adjustCSS, observe } from "../../src/index.js";
+
+      const css = (strings, ...values) => {
+        const string = adjustCSS("test-element", strings[0]);
+        return litCSS([string], ...values);
+      };
+
+      class TestElement extends LitElement {
+        static styles = css`
+          .wrapper {
+            display: flex;
+            height: 100%;
+            width: 100%;
+          }
+
+          .col1 {
+            flex: 0 0 200px;
+            background-color: lightgray;
+            transition: background-color .2s linear;
+          }
+
+          .col2 {
+            flex: 1;
+            background-color: papayawhip;
+            transition: background-color .2s linear;
+          }
+
+          .col1:before {
+            content: "not spanning";
+          }
+          .col2:before {
+            content: "not spanning";
+          }
+
+          @media (spanning: single-fold-vertical) {
+            .col1 {
+              flex: 0 0 env(fold-left);
+              margin-right: env(fold-width);
+              background-color: steelblue;
+            }
+
+            .col2 {
+              background-color: yellow;
+            }
+
+            .col1:before {
+              content: "spanning single-fold-vertical";
+            }
+            .col2:before {
+              content: "spanning single-fold-vertical";
+            }
+          }
+
+          @media (spanning: single-fold-horizontal) {
+            .wrapper {
+              flex-direction: column;
+            }
+
+            .col1 {
+              flex: 0 0 env(fold-top);
+              margin-bottom: env(fold-height);
+              background-color: pink;
+            }
+
+            .col2 {
+              background-color: seagreen;
+            }
+
+            .col1:before {
+              content: "spanning single-fold-horizontal";
+            }
+            .col2:before {
+              content: "spanning single-fold-horizontal";
+            }
+          }
+
+          @media (spanning: none) {
+            .col1:before {
+              content: "spanning:none";
+            }
+            .col2:before {
+              content: "spanning:none";
+            }
+          }
+        `;
+
+        connectedCallback() {
+          super.connectedCallback();
+          observe(this);
+        }
+
+        render() {
+          return html`
+            <div class="wrapper">
+              <div class="col1"></div>
+              <div class="col2"></div>
+            </div>
+          `;
+        }
+      }
+      customElements.define("test-element", TestElement);
+    </script>
+  </body>
+</html>
