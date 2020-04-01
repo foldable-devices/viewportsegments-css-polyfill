@@ -1,7 +1,6 @@
 *.swp
 *~
 *.log
-/*.js.map
 .DS_Store
 
 Thumbs.db
@@ -9,5 +8,3 @@ Thumbs.db
 /coverage
 .idea
 /.vscode
-
-/demos
