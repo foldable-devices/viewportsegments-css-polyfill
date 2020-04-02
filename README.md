@@ -147,8 +147,7 @@ const css = (strings, ...values) => {
 
 The `observe` method is also needed (see above).
 
-#### Special note for Handling of stylesheets manually constructed from CSS rules
-
+#### Special note for handling of stylesheets manually constructed from CSS rules
 If you build your CSS style sheets in JavaScript, the polyfill can't automatically convert your style sheets. However you can do something like this:
 
 
