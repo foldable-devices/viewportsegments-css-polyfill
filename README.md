@@ -147,6 +147,28 @@ const css = (strings, ...values) => {
 
 The `observe` method is also needed (see above).
 
+#### Special note for Handling of stylesheets manually constructed from CSS rules
+
+If you build your CSS style sheets in JavaScript, the polyfill can't automatically convert your style sheets. However you can do something like this:
+
+
+```js
+import { adjustCSS, observe } from "spanning-css-polyfill/spanning-css-polyfill.js";
+
+const css = sheets => {
+  const rule = adjustCSS(sheets[0]);
+  return rule ? rule : "* {}"; // Avoid empty rules.
+}
+
+sheet.insertRule(css`@media (spanning: single-fold-vertical) {
+  .div {
+    flex: 0 0 env(fold-left);
+    margin-right: env(fold-width);
+    background-color: steelblue;
+  }
+}`, sheet.cssRules.length);
+```
+
 Documentation
 ===
 Located [here](https://foldable-devices.github.io/spanning-css-polyfill/).

@@ -1,6 +1,6 @@
 {
   "name": "spanning-css-polyfill",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Polyfill for CSS spanning media query",
   "module": "build/spanning-css-polyfill.js",
   "main": "build/spanning-css-polyfill.js",
@@ -38,5 +38,6 @@
     "email": "zouhir@zouhir.org",
     "url": "https://zouhir.org/"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "https://github.com/foldable-devices/device-configurator"
 }
