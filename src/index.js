@@ -85,25 +85,29 @@ const spanning = {
  * @param {HTMLElement} element - The element.
  * @param {CSSStyleSheet} sheet - The stylesheet to update.
 */
-export function adjustCSS(elementName, sheet) {
+export function adjustCSS(sheet, elementName) {
   const noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
   const spanningCSS = getSpanningCSSText(sheet);
 
-  spanning[elementName] = {
-    [SPANNING_MF_VAL_HOR]: "",
-    [SPANNING_MF_VAL_VER]: "",
-    [SPANNING_MF_VAL_NONE]: ""
-  };
+  if (elementName) {
+    spanning[elementName] = {
+      [SPANNING_MF_VAL_HOR]: "",
+      [SPANNING_MF_VAL_VER]: "",
+      [SPANNING_MF_VAL_NONE]: ""
+    };
+  }
+
+  const _spanning = elementName ? spanning[elementName] : spanning;
 
   Object.keys(spanningCSS).forEach(k => {
-    if (typeof spanning[elementName][k] !== typeof(undefined)) {
-      spanning[elementName][k] += `
-        /* origin: ${elementName} */
+    if (typeof _spanning[k] !== typeof(undefined)) {
+      _spanning[k] += `
+        /* origin: ${elementName ? elementName : "inline"} */
         ${spanningCSS[k]}`;
     }
   });
 
-  spanning[elementName]["non-spanning"] = noSpanningCSS;
+  _spanning["non-spanning"] = noSpanningCSS;
   return noSpanningCSS;
 }
 

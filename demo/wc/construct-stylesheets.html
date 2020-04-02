@@ -25,7 +25,7 @@
     <script type=module>
       import { adjustCSS, observe } from "../../src/index.js";
 
-      const css = sheets =>  adjustCSS("test-element", sheets[0]);
+      const css = sheets =>  adjustCSS(sheets[0], "test-element");
 
       const testElementSheet = new CSSStyleSheet();
       const styleText = css`
