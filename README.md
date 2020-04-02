@@ -122,7 +122,7 @@ In the constructor of your web component make sure to pre-process and make the C
 
 ```js
 let sheet = shadowRoot.querySelector("style");
-sheet.innerText = adjustCSS("test-element", sheet.innerText);
+sheet.innerText = adjustCSS(sheet.innerText, "test-element");
 ```
 
 Now to make sure the style is updated whenever the configuration changes you need to add in your component class:
@@ -140,7 +140,7 @@ import { html, css as litCSS, LitElement } from 'https://cdn.pika.dev/lit-elemen
 import { adjustCSS, observe } from "spanning-css-polyfill/spanning-css-polyfill.js";
 
 const css = (strings, ...values) => {
-  const string = adjustCSS("test-element", strings[0]);
+  const string = adjustCSS(strings[0], "test-element");
   return litCSS([string], ...values);
 };
 ```
