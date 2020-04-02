@@ -147,7 +147,7 @@ fetchCSSText(cssElements).then(sheetsTextContentArray => {
   // let spanningCSSText = getSpanningCSSText(cssText);
   // editedCSSText = Object.assign(editedCSSText, spanningCSSText);
 
-  cssElements.forEach(el => el.parentElement.removeChild(el));
+  cssElements.forEach(el => el.parentElement != null && el.parentElement.removeChild(el));
 
   document.head.appendChild(styleFragment);
 
