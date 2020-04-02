@@ -114,7 +114,7 @@
           shadowRoot.appendChild(template.content.cloneNode(true));
 
           let sheet = shadowRoot.querySelector("style");
-          sheet.innerText = adjustCSS("test-element", sheet.innerText);
+          sheet.innerText = adjustCSS(sheet.innerText, "test-element");
         }
 
         connectedCallback() {

@@ -1,58 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Lit Demo</title>
+    <title>Basic Demo</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      body, html {
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        height: 100vh;
-      }
-    </style>
   </head>
   <body>
-    <test-element></test-element>
+    <div class="wrapper">
+      <div class="col1"></div>
+      <div class="col2"></div>
+    </div>
+
     <script type=module>
-      import { html, css as litCSS, LitElement } from 'https://cdn.pika.dev/lit-element@^2.2.1';
       import { adjustCSS, observe } from "../../src/index.js";
 
-      const css = (strings, ...values) => {
-        const string = adjustCSS(strings[0], "test-element");
-        return litCSS([string], ...values);
-      };
+      const css = sheets => {
+        const rule = adjustCSS(sheets[0]);
+        return rule ? rule : "* {}"; // Avoid empty rules.
+      }
 
-      class TestElement extends LitElement {
-        static styles = css`
+      function foo() {
+        let elem = document.createElement('style');
+        document.head.appendChild(elem);
+
+        let sheet = elem.sheet;
+
+        sheet.insertRule("* { margin: 0px}", sheet.cssRules.length);
+        sheet.insertRule(css`* {box-sizing: border-box;}`, sheet.cssRules.length);
+        sheet.insertRule(css`body, html {height: 100%;width: 100%;padding: 0;margin: 0;}`, sheet.cssRules.length);
+
+        sheet.insertRule(css`
           .wrapper {
             display: flex;
             height: 100%;
             width: 100%;
-          }
+          }`, sheet.cssRules.length);
 
+        sheet.insertRule(css`
           .col1 {
             flex: 0 0 200px;
             background-color: lightgray;
             transition: background-color .2s linear;
-          }
+          }`, sheet.cssRules.length);
 
-          .col2 {
+        sheet.insertRule(css`
+         .col2 {
             flex: 1;
             background-color: papayawhip;
             transition: background-color .2s linear;
-          }
+          }`, sheet.cssRules.length);
 
+        sheet.insertRule(css`
           .col1:before {
             content: "not spanning";
-          }
+          }`, sheet.cssRules.length);
+
+        sheet.insertRule(css`
           .col2:before {
             content: "not spanning";
-          }
+          }`, sheet.cssRules.length);
 
-          @media (spanning: single-fold-vertical) {
+        sheet.insertRule(css`@media (spanning: single-fold-vertical) {
             .col1 {
               flex: 0 0 env(fold-left);
               margin-right: env(fold-width);
@@ -69,9 +78,10 @@
             .col2:before {
               content: "spanning single-fold-vertical";
             }
-          }
+          }`, sheet.cssRules.length);
 
-          @media (spanning: single-fold-horizontal) {
+        // FIXME: this fails if @media starts on next newline
+        sheet.insertRule(css`@media (spanning: single-fold-horizontal) {
             .wrapper {
               flex-direction: column;
             }
@@ -92,33 +102,21 @@
             .col2:before {
               content: "spanning single-fold-horizontal";
             }
-          }
+          }`, sheet.cssRules.length);
 
-          @media (spanning: none) {
+        sheet.insertRule(css`@media (spanning: none) {
             .col1:before {
               content: "spanning:none";
             }
             .col2:before {
               content: "spanning:none";
             }
-          }
-        `;
+          }`, sheet.cssRules.length);
 
-        connectedCallback() {
-          super.connectedCallback();
-          observe(this);
-        }
-
-        render() {
-          return html`
-            <div class="wrapper">
-              <div class="col1"></div>
-              <div class="col2"></div>
-            </div>
-          `;
-        }
+        observe();
       }
-      customElements.define("test-element", TestElement);
+
+      foo();
     </script>
   </body>
 </html>
