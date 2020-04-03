@@ -1,4 +1,4 @@
-CSS Foldable Display polyfills
+CSS Foldable Display polyfill
 ===
 
 This is a polyfill for the [proposed](https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/master/Foldables/explainer.md) CSS Foldable Display extensions.
@@ -99,28 +99,28 @@ In order to change the display configuration, you can use the polyfill together 
 
 #### Manually changing the display configuration
 
-You can update values such as `spanning`, `foldSize` and `browserShellSize` by importing the `CSSSpanningFeature` object. You can also subscribe to the 'change' event
+You can update values such as `spanning`, `foldSize` and `browserShellSize` by importing the `FoldablesFeature` object. You can also subscribe to the 'change' event
 to be notified whenever the `'spanning'` media query feature or the environment variables change. That can happen due to window resizes or because the configuration values were changed programmatically.
 
 ```js
-  import { CSSSpanningFeature } from '/path/to/modules/spanning-css-polyfill/spanning-css-polyfill.js';
+  import { FoldablesFeature } from '/path/to/modules/spanning-css-polyfill/spanning-css-polyfill.js';
 
-  const spanningFeat = new CSSSpanningFeature;
+  const foldablesFeat = new FoldablesFeature;
 
   // Add an event listener.
-  spanningFeat.onchange = () => console.log("change");
+  foldablesFeat.onchange = () => console.log("change");
 
     // Add as many event listeners as you want.
-  spanningFeat.addEventListener('change', () => console.log("change"));
+  foldablesFeat.addEventListener('change', () => console.log("change"));
 
   // Change a single value; results in one update (one 'change' event firing).
-  spanningFeat.foldSize = 20;
+  foldablesFeat.foldSize = 20;
 
   // Change multiple values by assignment; results in one update.
-  Object.assign(spanningFeat, { foldSize: 50, spanning: "none"});
+  Object.assign(foldablesFeat, { foldSize: 50, spanning: "none"});
 
   // Change multiple values in one scope; results in one update
-  (function() { spanningFeat.foldSize = 100; spanningFeat = "single-fold-horizontal" })();
+  (function() { foldablesFeat.foldSize = 100; foldablesFeat = "single-fold-horizontal" })();
 ```
 
 #### Special note on web components and [lit-element](https://lit-element.polymer-project.org/)

@@ -8,7 +8,7 @@
  * constructed programmatically.
  *
  * @projectname Spanning CSS Polyfill
- * @version 1.0
+ * @version 1.0.10
  * @author Zouhir Chahoud
  * @author Kenneth Christiansen
  * @author Alexis Menard
@@ -50,14 +50,14 @@ async function invalidate() {
 
 /**
  *
- * @typedef CSSSpanningFeature
+ * @typedef FoldablesFeature
  * @type {object}
  * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
  * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
  * @property {string} spanning - The matching 'spanning' media query feature: "single-fold-horizontal", "single-fold-vertical" or "none".
  * @property {EventHandler} onchange
  */
-export class CSSSpanningFeature {
+export class FoldablesFeature {
   constructor() {
     if (feature !== undefined) {
       return feature;
@@ -97,7 +97,7 @@ export class CSSSpanningFeature {
   set browserShellSize(v) { sessionStorage.setItem(`${ns}-browserShellSize`, v); invalidate(); }
 }
 
-feature = new CSSSpanningFeature();
+feature = new FoldablesFeature();
 console.log(feature); // Makes it easy to access from console.
 
 if (!hasBrowserSupport) {
