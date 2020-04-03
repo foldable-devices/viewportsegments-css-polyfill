@@ -8,12 +8,12 @@ import {
 } from "../constants.js";
 
 /**
- * Returns the device fold (hinge) geometry
+ * Returns the computed device fold (hinge) CSS layout box.
  *
  * @param {Object} configs
  * @returns {Object}
  */
-export function getDeviceFoldRects(configs) {
+export function getDeviceFoldBox(configs) {
   let left = 0,
     top = 0,
     width = 0,

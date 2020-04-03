@@ -104,7 +104,7 @@
     
 
     
-    <h4 class="name" id="adjustCSS"><span class="type-signature"></span>adjustCSS<span class="signature">(element, sheet)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="adjustCSS"><span class="type-signature"></span>adjustCSS<span class="signature">(sheet, element)</span><span class="type-signature"></span></h4>
     
 
     
@@ -112,8 +112,13 @@
 
 
 <div class="description">
-    Replace the spanning media queries according to their configuration.
-This will pre-process the sheet and make it valid.
+    Pre-processes the make the stylesheet valid.
+
+Strips out the CSS 'spanning' media query features and environment variables,
+if not supported by the user agent, and internally stores rewritten CSS rules,
+which will be applied according to the polyfill options.
+
+Call observe() to respond to changes affecting the polyfilled features.
 </div>
 
 
@@ -145,29 +150,6 @@ This will pre-process the sheet and make it valid.
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>element</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">HTMLElement</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The element.</td>
-        </tr>
-
     
 
         <tr>
@@ -188,7 +170,31 @@ This will pre-process the sheet and make it valid.
 
             
 
-            <td class="description last">The stylesheet to update.</td>
+            <td class="description last">The stylesheet to pre-process.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The element name, if the stylesheet is associated
+the shadow root of an element.</td>
         </tr>
 
     
@@ -229,7 +235,7 @@ This will pre-process the sheet and make it valid.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line134">line 134</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line159">line 159</a>
     </li></ul></dd>
     
 
@@ -265,7 +271,7 @@ This will pre-process the sheet and make it valid.
     
 
     
-    <h4 class="name" id="observe"><span class="type-signature"></span>observe<span class="signature">(element)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="observe"><span class="type-signature"></span>observe<span class="signature">(element<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -273,8 +279,13 @@ This will pre-process the sheet and make it valid.
 
 
 <div class="description">
-    Register the element to make sure it gets updated whenever the
-configuration changes.
+    Observe and respond to changes affecting the polyfilled features.
+
+When called without arguments, it will apply rewritten style rules globally,
+which will not affect elements with associated shadow root.
+
+When called with [element] it will apply the correct rewritten style rules
+to the element with associated shadow root.
 </div>
 
 
@@ -297,6 +308,8 @@ configuration changes.
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
         
 
         
@@ -323,10 +336,20 @@ configuration changes.
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">The element.</td>
+            <td class="description last">An element with associated shadow root.</td>
         </tr>
 
     
@@ -367,7 +390,7 @@ configuration changes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line166">line 166</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line194">line 194</a>
     </li></ul></dd>
     
 
@@ -403,7 +426,7 @@ configuration changes.
     
 
     
-    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(configuration)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
@@ -411,7 +434,7 @@ configuration changes.
 
 
 <div class="description">
-    Update the current configuration with the provided configuration.
+    Update the current polyfill with the provided options.
 </div>
 
 
@@ -447,13 +470,13 @@ configuration changes.
 
         <tr>
             
-                <td class="name"><code>configuration</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="global.html#Configuration">Configuration</a></span>
+<span class="param-type"><a href="global.html#CSSSpanningPolyfillOptions">CSSSpanningPolyfillOptions</a></span>
 
 
             
@@ -463,7 +486,7 @@ configuration changes.
 
             
 
-            <td class="description last">The new configuration.</td>
+            <td class="description last">The new options.</td>
         </tr>
 
     
@@ -504,7 +527,7 @@ configuration changes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line236">line 236</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -542,7 +565,7 @@ configuration changes.
 
         
                 
-<h4 class="name" id="Configuration">Configuration</h4>
+<h4 class="name" id="CSSSpanningPolyfillOptions">CSSSpanningPolyfillOptions</h4>
 
 
 
@@ -605,7 +628,7 @@ configuration changes.
 
             
 
-            <td class="description last">The size in CSS pixels of the fold.</td>
+            <td class="description last">The width of the visible fold (hinge) between the two screens, in CSS pixels.</td>
         </tr>
 
     
@@ -628,7 +651,7 @@ configuration changes.
 
             
 
-            <td class="description last">The size in CSS pixels of the browser shell.</td>
+            <td class="description last">The height of the user agent (browser) top chrome, in CSS pixels.</td>
         </tr>
 
     
@@ -651,7 +674,7 @@ configuration changes.
 
             
 
-            <td class="description last">The current spanning mode : single-fold-horizontal, single-fold-vertical or none.</td>
+            <td class="description last">The matching 'spanning' media query feature: "single-fold-horizontal", "single-fold-vertical" or "none".</td>
         </tr>
 
     
@@ -690,7 +713,7 @@ configuration changes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line219">line 219</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line99">line 99</a>
     </li></ul></dd>
     
 
@@ -726,7 +749,7 @@ configuration changes.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Apr 02 2020 16:30:06 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Apr 03 2020 08:33:26 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
