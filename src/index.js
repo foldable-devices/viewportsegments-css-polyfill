@@ -155,7 +155,7 @@ const spanning = {
  * Call observe() to respond to changes affecting the polyfilled features.
  *
  * @param {CSSStyleSheet} sheet - The stylesheet to pre-process.
- * @param {string} element - The element name, if the stylesheet is associated
+ * @param {string} [elementName] - The element name, if the stylesheet is associated
  * the shadow root of an element.
  */
 export function adjustCSS(sheet, elementName) {
