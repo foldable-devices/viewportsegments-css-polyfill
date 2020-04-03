@@ -184,7 +184,7 @@ sheet.insertRule(css`@media (spanning: single-fold-vertical) {
 
 Documentation
 ===
-Located [here](https://foldable-devices.github.io/spanning-css-polyfill/).
+Located [here](https://foldable-devices.github.io/spanning-css-polyfill/global.html).
 
 Demos
 ===
