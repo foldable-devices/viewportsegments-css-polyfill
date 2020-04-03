@@ -99,14 +99,28 @@ In order to change the display configuration, you can use the polyfill together 
 
 #### Manually changing the display configuration
 
-You can update values such as `spanning`, `foldSize` and `browserShellSize` by calling the `update` method:
+You can update values such as `spanning`, `foldSize` and `browserShellSize` by importing the `CSSSpanningFeature` object. You can also subscribe to the 'change' event
+to be notified whenever the `'spanning'` media query feature or the environment variables change. That can happen due to window resizes or because the configuration values were changed programmatically.
 
 ```js
-  update({
-    spanning: "single-fold-horizontal",
-    foldSize: 30,
-    browserShellSize: 20
-  });
+  import { CSSSpanningFeature } from '/path/to/modules/spanning-css-polyfill/spanning-css-polyfill.js';
+
+  const spanningFeat = new CSSSpanningFeature;
+
+  // Add an event listener.
+  spanningFeat.onchange = () => console.log("change");
+
+    // Add as many event listeners as you want.
+  spanningFeat.addEventListener('change', () => console.log("change"));
+
+  // Change a single value; results in one update (one 'change' event firing).
+  spanningFeat.foldSize = 20;
+
+  // Change multiple values by assignment; results in one update.
+  Object.assign(spanningFeat, { foldSize: 50, spanning: "none"});
+
+  // Change multiple values in one scope; results in one update
+  (function() { spanningFeat.foldSize = 100; spanningFeat = "single-fold-horizontal" })();
 ```
 
 #### Special note on web components and [lit-element](https://lit-element.polymer-project.org/)

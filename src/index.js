@@ -38,33 +38,69 @@ const hasBrowserSupport =
 
 console.info(`CSS Spanning Media Queries are supported? ${hasBrowserSupport}`);
 
-if (!hasBrowserSupport) {
-  if (typeof window[ns] === typeof(undefined)) {
-    const eventTarget = document.createDocumentFragment();
+let feature;
+let needsDispatch = false;
+async function invalidate() {
+  if (!needsDispatch) {
+    needsDispatch = true;
+    needsDispatch = await Promise.resolve(false);
+    feature.dispatchEvent(new Event('change'));
+  }
+}
 
-    Object.defineProperty(window, ns, {
-      value: {
-        update,
-        spanning: sessionStorage.getItem(`${ns}-spanning`) || SPANNING_MF_VAL_NONE,
-        foldSize: +sessionStorage.getItem(`${ns}-foldSize`) || 0,
-        browserShellSize: +sessionStorage.getItem(`${ns}-browserShellSize`) || 0,
-        addEventListener: eventTarget['addEventListener'].bind(eventTarget),
-        dispatchEvent: eventTarget['dispatchEvent'].bind(eventTarget)
+/**
+ *
+ * @typedef CSSSpanningFeature
+ * @type {object}
+ * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
+ * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
+ * @property {string} spanning - The matching 'spanning' media query feature: "single-fold-horizontal", "single-fold-vertical" or "none".
+ * @property {EventHandler} onchange
+ */
+export class CSSSpanningFeature {
+  constructor() {
+    if (feature !== undefined) {
+      return feature;
+    }
+
+    const eventTarget = document.createDocumentFragment();
+    this.addEventListener = eventTarget['addEventListener'].bind(eventTarget);
+    this.removeEventListener = eventTarget['removeEventListener'].bind(eventTarget);
+    this.dispatchEvent = event => {
+      if (event.type !== "change") {
+        return;
       }
-    });
+      const methodName = `on${event.type}`;
+      if (typeof this[methodName] == 'function') {
+        this[methodName](event);
+      }
+      return eventTarget.dispatchEvent(event);
+    }
 
     // Web-based emulator runs this polyfill in an iframe, we need to
     // communicate emulator state changes to the site.
     // Should only be registered once (in CSS or JS polyfill, not both).
     window.addEventListener("message", ev => {
-      const action = ev.data.action || "";
-      const value = ev.data.value || {};
-      if (action === "update") {
-        window[ns].update(value);
+      if (ev.data.action === "update") {
+        Object.assign(this, ev.data.value);
       }
     });
   }
 
+  get spanning() { return sessionStorage.getItem(`${ns}-spanning`) || SPANNING_MF_VAL_NONE }
+  set spanning(v) { sessionStorage.setItem(`${ns}-spanning`, v); invalidate(); }
+
+  get foldSize() { return +sessionStorage.getItem(`${ns}-foldSize`) || 0 }
+  set foldSize(v) { sessionStorage.setItem(`${ns}-foldSize`, v); invalidate(); }
+
+  get browserShellSize() { return +sessionStorage.getItem(`${ns}-browserShellSize`) || 0 }
+  set browserShellSize(v) { sessionStorage.setItem(`${ns}-browserShellSize`, v); invalidate(); }
+}
+
+feature = new CSSSpanningFeature();
+console.log(feature); // Makes it easy to access from console.
+
+if (!hasBrowserSupport) {
   const cssElements = Array.from(
     document.querySelectorAll('link[rel="stylesheet"], style')
   );
@@ -94,40 +130,6 @@ if (!hasBrowserSupport) {
 
     observe();
   });
-}
-
-/**
- *
- * @typedef CSSSpanningPolyfillOptions
- * @type {object}
- * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
- * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
- * @property {string} spanning - The matching 'spanning' media query feature: "single-fold-horizontal", "single-fold-vertical" or "none".
- */
-const VALID_CONFIG_PROPS = new Set([
-  "foldSize",
-  "browserShellSize",
-  "spanning"
-]);
-
-/** Update the current polyfill with the provided options.
- * @param {CSSSpanningPolyfillOptions} options - The new options.
-*/
-export function update(options) {
-  if (hasBrowserSupport) {
-    throw new DOMException(
-      "Failed updating; spanning is natively supported by the user agent.",
-      "NotSupportedError"
-    );
-  }
-  Object.keys(options).forEach(k => {
-    if (VALID_CONFIG_PROPS.has(k)) {
-      window[ns][k] = options[k];
-      sessionStorage.setItem(`${ns}-${k}`, window[ns][k]);
-    }
-  });
-
-  window[ns].dispatchEvent(new Event("update"));
 }
 
 /*
@@ -197,11 +199,11 @@ export function observe(element) {
   }
   insertSpanningStyles(element);
   window.addEventListener("resize", () => debounce(insertSpanningStyles(element), 150));
-  window[ns].addEventListener("update", () => insertSpanningStyles(element));
+  feature.addEventListener("change", () => insertSpanningStyles(element));
 }
 
 function insertSpanningStyles(element) {
-  let options = window[ns];
+  let options = feature;
 
   let spanningCSSText = element ?
     spanning[element.nodeName.toLowerCase()][options.spanning] :
