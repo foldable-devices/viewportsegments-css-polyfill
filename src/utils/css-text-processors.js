@@ -1,11 +1,9 @@
-import {
-  SPANNING_MF_KEY,
-  SPANNING_MF_VAL_HOR,
-  SPANNING_MF_VAL_VER,
-  SPANNING_MF_VAL_NONE
-} from "../constants.js";
+const SPANNING_MF_KEY = "spanning";
+const SPANNING_MF_VAL_HOR = "single-fold-horizontal";
+const SPANNING_MF_VAL_VER = "single-fold-vertical";
+const SPANNING_MF_VAL_NONE = "none";
 
-const SPANNING_MEDIA_BLOCK_REGEXP_STR = `(@media.*?\\b${SPANNING_MF_KEY}\\b[^{]+)\\{([\\s\\S]+?\\})\\s*\\}`;
+const SPANNING_MEDIA_BLOCK_REGEXP_STR = `(\\s*)(@media.*?\\b${SPANNING_MF_KEY}\\b[^{]+)\\{([\\s\\S]+?\\})(\\s*)\\}`;
 
 const MEDIA_FEATURES_REGEXP = /\((.*?)\)/gi;
 
@@ -26,12 +24,12 @@ export function _processSpanningMediaBlock(cssText) {
   const regex = new RegExp(SPANNING_MEDIA_BLOCK_REGEXP_STR, "gi");
 
   let spanningMediaBlocks;
-  if(typeof cssText.matchAll === "function") {
+  if (typeof cssText.matchAll === "function") {
     spanningMediaBlocks = Array.from(cssText.matchAll(regex));
-  }else{
+  } else {
     spanningMediaBlocks = [];
 
-    while(spanningMediaBlocks[spanningMediaBlocks.length]=regex.exec(cssText));
+    while (spanningMediaBlocks[spanningMediaBlocks.length] = regex.exec(cssText));
     spanningMediaBlocks.length--;
   }
   return spanningMediaBlocks;
@@ -113,8 +111,10 @@ export function getSpanningCSSText(cssText) {
   };
 
   spanningMediaBlocks.forEach(block => {
-    const definition = block[1];
-    const content = block[2];
+    const indentStart = block[1];
+    const definition = block[2];
+    const content = block[3];
+    const indentEnd = block[4];
 
     //TODO: this is bad.
     let spanningValue = SPANNING_MF_VAL_NONE;
@@ -132,10 +132,7 @@ export function getSpanningCSSText(cssText) {
       .filter(f => !f.includes(SPANNING_MF_KEY))
       .join(" and ");
 
-    result[spanningValue] += `
-      ${mediaTypes} ${mediaFeatures} {
-        ${content}
-      }`;
+    result[spanningValue] += `${indentStart}${mediaTypes}${mediaFeatures}{${content}${indentEnd}}`;
   });
 
   return result;
