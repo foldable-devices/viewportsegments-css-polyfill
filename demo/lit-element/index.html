@@ -18,7 +18,9 @@
     <test-element></test-element>
     <script type=module>
       import { html, css as litCSS, LitElement } from 'https://cdn.pika.dev/lit-element@^2.2.1';
-      import { adjustCSS, observe } from "../../src/index.js";
+      import { adjustCSS, observe, FoldablesFeature } from "../../src/index.js";
+
+      const feat = new FoldablesFeature;
 
       const css = (strings, ...values) => {
         const string = adjustCSS(strings[0], "test-element");
@@ -106,13 +108,19 @@
 
         connectedCallback() {
           super.connectedCallback();
+          feat.addEventListener('change', () =>  this.requestUpdate());
           observe(this);
         }
 
         render() {
           return html`
             <div class="wrapper">
-              <div class="col1"></div>
+              <div class="col1">
+                <h2>Configuration</h2>
+                spanning: ${feat.spanning}<br>
+                foldSize: ${feat.foldSize}<br>
+                browserShellSize: ${feat.browserShellSize}
+              </div>
               <div class="col2"></div>
             </div>
           `;

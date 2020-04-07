@@ -16,6 +16,7 @@
  */
 
 import { FoldablesFeature } from "../node_modules/windowsegments-polyfill/build/windowsegments-polyfill.js";
+export { FoldablesFeature };
 
 import {
   getSpanningCSSText,
