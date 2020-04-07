@@ -39,5 +39,8 @@
     "url": "https://zouhir.org/"
   },
   "license": "MIT",
-  "repository": "https://github.com/foldable-devices/device-configurator"
+  "repository": "https://github.com/foldable-devices/device-configurator",
+  "dependencies": {
+    "windowsegments-polyfill": "^1.0.1"
+  }
 }
