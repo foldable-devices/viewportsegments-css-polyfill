@@ -1,6 +1,6 @@
 {
   "name": "spanning-css-polyfill",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Polyfill for CSS spanning media query",
   "module": "build/spanning-css-polyfill.js",
   "main": "build/spanning-css-polyfill.js",
@@ -39,7 +39,7 @@
     "url": "https://zouhir.org/"
   },
   "license": "MIT",
-  "repository": "https://github.com/foldable-devices/device-configurator",
+  "repository": "https://github.com/foldable-devices/spanning-css-polyfill",
   "dependencies": {
     "windowsegments-polyfill": "^1.0.1"
   }
