@@ -1,4 +1,3 @@
-
 /**
  * This is the documentation for the CSS spanning polyfill.
  *
@@ -15,21 +14,14 @@
  * @copyright 2020
  *
  */
-import {
-  POLYFILL_NAMESPACE as ns,
-  SPANNING_MF_VAL_NONE,
-  SPANNING_MF_VAL_VER,
-  SPANNING_MF_VAL_HOR
-} from "./constants.js";
+
+import { FoldablesFeature } from "../node_modules/windowsegments-polyfill/build/windowsegments-polyfill.js";
 
 import {
   getSpanningCSSText,
   replaceSpanningMediaBlocks,
   replaceCSSEnvVariables
 } from "./utils/css-text-processors.js";
-
-import { getDeviceFoldBox } from "./utils/device-geometry.js";
-import { fetchCSSText, debounce, createElement } from "./utils/misc.js";
 
 const hasBrowserSupport =
   window.matchMedia('(spanning: single-fold-horizontal)').matches ||
@@ -38,77 +30,18 @@ const hasBrowserSupport =
 
 console.info(`CSS Spanning Media Queries are supported? ${hasBrowserSupport}`);
 
-let feature;
-let needsDispatch = false;
-async function invalidate() {
-  if (!needsDispatch) {
-    needsDispatch = true;
-    needsDispatch = await Promise.resolve(false);
-    feature.dispatchEvent(new Event('change'));
-  }
-}
-
-/**
- *
- * @typedef FoldablesFeature
- * @type {object}
- * @property {number} foldSize - The width of the visible fold (hinge) between the two screens, in CSS pixels.
- * @property {number} browserShellSize - The height of the user agent (browser) top chrome, in CSS pixels.
- * @property {string} spanning - The matching 'spanning' media query feature: "single-fold-horizontal", "single-fold-vertical" or "none".
- * @property {EventHandler} onchange
- */
-export class FoldablesFeature {
-  constructor() {
-    if (feature !== undefined) {
-      return feature;
-    }
-
-    const eventTarget = document.createDocumentFragment();
-    this.addEventListener = eventTarget['addEventListener'].bind(eventTarget);
-    this.removeEventListener = eventTarget['removeEventListener'].bind(eventTarget);
-    this.dispatchEvent = event => {
-      if (event.type !== "change") {
-        return;
-      }
-      const methodName = `on${event.type}`;
-      if (typeof this[methodName] == 'function') {
-        this[methodName](event);
-      }
-      return eventTarget.dispatchEvent(event);
-    }
-
-    // Web-based emulator runs this polyfill in an iframe, we need to
-    // communicate emulator state changes to the site.
-    // Should only be registered once (in CSS or JS polyfill, not both).
-    window.addEventListener("message", ev => {
-      if (ev.data.action === "update") {
-        Object.assign(this, ev.data.value);
-      }
-    });
-  }
-
-  get spanning() { return sessionStorage.getItem(`${ns}-spanning`) || SPANNING_MF_VAL_NONE }
-  set spanning(v) { sessionStorage.setItem(`${ns}-spanning`, v); invalidate(); }
-
-  get foldSize() { return +sessionStorage.getItem(`${ns}-foldSize`) || 0 }
-  set foldSize(v) { sessionStorage.setItem(`${ns}-foldSize`, v); invalidate(); }
-
-  get browserShellSize() { return +sessionStorage.getItem(`${ns}-browserShellSize`) || 0 }
-  set browserShellSize(v) { sessionStorage.setItem(`${ns}-browserShellSize`, v); invalidate(); }
-}
-
-feature = new FoldablesFeature();
-console.log(feature); // Makes it easy to access from console.
+let feature = new FoldablesFeature();
 
 if (!hasBrowserSupport) {
   const cssElements = Array.from(
     document.querySelectorAll('link[rel="stylesheet"], style')
   );
 
+  const fetchCSSText = elements => Promise.all(
+    elements.map(element => element.href ? fetch(href).then(r => r.text()) : element.textContent)
+  );
+
   fetchCSSText(cssElements).then(sheetsTextContentArray => {
-    if (hasBrowserSupport) {
-      return sheet;
-    }
     const styleFragment = new DocumentFragment();
     sheetsTextContentArray.forEach((sheet, i) => {
       const noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
@@ -116,12 +49,13 @@ if (!hasBrowserSupport) {
 
       const sheetOrigin = cssElements[i].href || "inline";
       for (let [key, value] of Object.entries(spanningCSS)) {
-        spanning[key] += `/* origin:  ${sheetOrigin} */\n${value}`;
+        spanning[key] += `/* origin: ${sheetOrigin} */${value}`;
       };
 
-      styleFragment.appendChild(
-        createElement("style", { "data-css-origin": sheetOrigin }, noSpanningCSS)
-      );
+      const element = document.createElement("style");
+      element.setAttribute("data-css-origin", sheetOrigin);
+      element.textContent = noSpanningCSS;
+      styleFragment.appendChild(element);
     });
 
     cssElements.forEach(el => el.parentElement != null && el.parentElement.removeChild(el));
@@ -141,9 +75,9 @@ if (!hasBrowserSupport) {
  * -- none: CSS found in the media feature (spanning: none)
  */
 const spanning = {
-  [SPANNING_MF_VAL_HOR]: "",
-  [SPANNING_MF_VAL_VER]: "",
-  [SPANNING_MF_VAL_NONE]: ""
+  "single-fold-horizontal": "",
+  "single-fold-vertical": "",
+  "none": ""
 };
 
 /** Pre-processes the make the stylesheet valid.
@@ -167,16 +101,16 @@ export function adjustCSS(sheet, elementName) {
 
   if (elementName) {
     spanning[elementName] = {
-      [SPANNING_MF_VAL_HOR]: "",
-      [SPANNING_MF_VAL_VER]: "",
-      [SPANNING_MF_VAL_NONE]: ""
+      "single-fold-horizontal": "",
+      "single-fold-vertical": "",
+      "none": ""
     };
   }
 
   const _spanning = elementName ? spanning[elementName] : spanning;
-  const sheetOrigin = elementName || "inline";
+  const sheetOrigin = elementName ? '' : "/* origin: inline */";
   for (let [key, value] of Object.entries(spanningCSS)) {
-    _spanning[key] += `/* origin:  ${sheetOrigin} */\n${value}`;
+    _spanning[key] += `${sheetOrigin}${value}`;
   };
 
   _spanning["non-spanning"] = noSpanningCSS;
@@ -198,7 +132,6 @@ export function observe(element) {
     return;
   }
   insertSpanningStyles(element);
-  window.addEventListener("resize", () => debounce(insertSpanningStyles(element), 150));
   feature.addEventListener("change", () => insertSpanningStyles(element));
 }
 
@@ -212,10 +145,15 @@ function insertSpanningStyles(element) {
   let noSpanningCSSText = element ?
     spanning[element.nodeName.toLowerCase()]["non-spanning"] : null;
 
-  for (let [key, value] of Object.entries(getDeviceFoldBox(options))) {
-    spanningCSSText = replaceCSSEnvVariables(spanningCSSText, key, `${value}px`);
+  const segments = feature.getSegments();
+  // FIXME: Handle CSS environment variables fallback in this case.
+  const fold = segments.length === 1 ? {} : segments[1];
+
+  for (let [key, value] of Object.entries(fold)) {
+    spanningCSSText = replaceCSSEnvVariables(spanningCSSText, `fold-${key}`, `${value}px`);
   };
 
+  const ns = "__foldables_sheet__";
   const replace = (target, sheet) => {
     for (let el of target.querySelectorAll(`.${ns}`)) {
       el.remove();
