@@ -39,7 +39,7 @@ if (!hasBrowserSupport) {
   );
 
   const fetchCSSText = elements => Promise.all(
-    elements.map(element => element.href ? fetch(href).then(r => r.text()) : element.textContent)
+    elements.map(element => element.href ? fetch(element.href).then(r => r.text()) : element.textContent)
   );
 
   fetchCSSText(cssElements).then(sheetsTextContentArray => {
