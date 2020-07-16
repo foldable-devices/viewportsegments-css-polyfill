@@ -1,24 +1,22 @@
 {
   "name": "spanning-css-polyfill",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Polyfill for CSS spanning media query",
   "module": "build/spanning-css-polyfill.js",
   "main": "build/spanning-css-polyfill.js",
   "type": "module",
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
-    "@babel/register": "^7.9.0",
-    "concurrently": "^5.1.0",
-    "microbundle": "^0.11.0",
-    "serve": "^11.3.0",
-    "tape": "^4.11.0",
-    "jsdoc": "^3.6.3"
+    "concurrently": "^5.2.0",
+    "microbundle": "^0.12.3",
+    "serve": "^11.3.2",
+    "tape": "^5.0.1",
+    "tape-es": "^1.2.11",
+    "jsdoc": "^3.6.4"
   },
   "scripts": {
-    "build": "microbundle -f es -o build",
+    "build": "microbundle -f es -o build/",
     "dev": "concurrently serve \"microbundle -f es watch\"",
-    "test": "tape -r @babel/register tests/*.js",
+    "test": "tape-es tests/*.js",
     "generate-docs": "jsdoc -d docs/ src/index.js README.md"
   },
   "files": [
@@ -28,11 +26,6 @@
     "!/tests/",
     "!/docs/"
   ],
-  "babel": {
-    "plugins": [
-      "@babel/plugin-transform-modules-commonjs"
-    ]
-  },
   "author": {
     "name": "Zouhir Chahoud",
     "email": "zouhir@zouhir.org",
@@ -41,6 +34,6 @@
   "license": "MIT",
   "repository": "https://github.com/foldable-devices/spanning-css-polyfill",
   "dependencies": {
-    "windowsegments-polyfill": "^1.0.1"
+    "windowsegments-polyfill": "^1.0.2"
   }
 }

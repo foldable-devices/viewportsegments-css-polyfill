@@ -1,13 +1,6 @@
-const test = require("tape");
+import test from "tape";
 
-const { SPANNING_MF_KEY } = require("../src/constants");
-
-const {
-  _processSpanningMediaBlock,
-  _getMediaFeatures,
-  replaceCSSEnvVariables,
-  _getMediaTypes
-} = require("../src/utils/css-text-processors.js");
+import { SPANNING_MF_KEY, replaceCSSEnvVariables, _processSpanningMediaBlock, _getMediaFeatures, _getMediaTypes } from "../src/utils/css-text-processors.js";
 
 test(`_processSpanningMediaBlock should find media query blocks starting with @media and containing ${SPANNING_MF_KEY} `, function(t) {
   let spanningmediaQuery = `@media type (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px){body { color: green; }}`;
@@ -32,12 +25,12 @@ test("_processSpanningMediaBlock should find ALL spanning media blocks", functio
   t.end();
 });
 
-test("_processSpanningMediaBlock should capture the media query defintion", function(t) {
+test("_processSpanningMediaBlock should capture the media query definition", function(t) {
   let spanningmediaQuery = `@media type (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px){body { color: green; }}`;
   let otherCSSText = `body{ background: blue' }`;
   t.equal(
     "@media type (spanning: single-fold-vertical) and (min-width: 900px)",
-    _processSpanningMediaBlock(spanningmediaQuery + otherCSSText)[0][1]
+    _processSpanningMediaBlock(spanningmediaQuery + otherCSSText)[0][2]
   );
   t.end();
 });
@@ -47,7 +40,7 @@ test("_processSpanningMediaBlock should capture the media query CSS content", fu
   let otherCSSText = `body{ background: blue' }`;
   t.equal(
     "body { color: green; }",
-    _processSpanningMediaBlock(spanningmediaQuery + otherCSSText)[0][2]
+    _processSpanningMediaBlock(spanningmediaQuery + otherCSSText)[0][3]
   );
   t.end();
 });

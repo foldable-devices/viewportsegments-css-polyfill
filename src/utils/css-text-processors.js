@@ -1,4 +1,4 @@
-const SPANNING_MF_KEY = "spanning";
+export const SPANNING_MF_KEY = "spanning";
 const SPANNING_MF_VAL_HOR = "single-fold-horizontal";
 const SPANNING_MF_VAL_VER = "single-fold-vertical";
 const SPANNING_MF_VAL_NONE = "none";
