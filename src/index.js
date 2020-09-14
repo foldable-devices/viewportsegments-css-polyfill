@@ -7,7 +7,7 @@
  * constructed programmatically.
  *
  * @projectname Spanning CSS Polyfill
- * @version 2.0.0
+ * @version 2.0.1
  * @author Zouhir Chahoud
  * @author Kenneth Christiansen
  * @author Alexis Menard
@@ -25,9 +25,9 @@ import {
 } from "./utils/css-text-processors.js";
 
 const hasBrowserSupport =
-  window.matchMedia('(spanning: single-fold-horizontal)').matches ||
-  window.matchMedia('(spanning: single-fold-vertical)').matches ||
-  window.matchMedia('(spanning: none)').matches || false;
+  window.matchMedia('(screen-spanning: single-fold-horizontal)').matches ||
+  window.matchMedia('(screen-spanning: single-fold-vertical)').matches ||
+  window.matchMedia('(screen-spanning: none)').matches || false;
 
 console.info(`CSS Spanning Media Queries are supported? ${hasBrowserSupport}`);
 
