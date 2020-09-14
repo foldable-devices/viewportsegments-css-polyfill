@@ -61,7 +61,7 @@
             content: "not spanning";
           }`, sheet.cssRules.length);
 
-        sheet.insertRule(css`@media (spanning: single-fold-vertical) {
+        sheet.insertRule(css`@media (screen-spanning: single-fold-vertical) {
             .col1 {
               flex: 0 0 env(fold-left);
               margin-right: env(fold-width);
@@ -73,15 +73,15 @@
             }
 
             .col1:before {
-              content: "spanning single-fold-vertical";
+              content: "screen-spanning single-fold-vertical";
             }
             .col2:before {
-              content: "spanning single-fold-vertical";
+              content: "screen-spanning single-fold-vertical";
             }
           }`, sheet.cssRules.length);
 
         // FIXME: this fails if @media starts on next newline
-        sheet.insertRule(css`@media (spanning: single-fold-horizontal) {
+        sheet.insertRule(css`@media (screen-spanning: single-fold-horizontal) {
             .wrapper {
               flex-direction: column;
             }
@@ -97,19 +97,19 @@
             }
 
             .col1:before {
-              content: "spanning single-fold-horizontal";
+              content: "screen-spanning single-fold-horizontal";
             }
             .col2:before {
-              content: "spanning single-fold-horizontal";
+              content: "screen-spanning single-fold-horizontal";
             }
           }`, sheet.cssRules.length);
 
-        sheet.insertRule(css`@media (spanning: none) {
+        sheet.insertRule(css`@media (screen-spanning: none) {
             .col1:before {
-              content: "spanning:none";
+              content: "screen-spanning:none";
             }
             .col2:before {
-              content: "spanning:none";
+              content: "screen-spanning:none";
             }
           }`, sheet.cssRules.length);
 

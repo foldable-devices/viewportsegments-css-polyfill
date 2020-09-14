@@ -29,14 +29,14 @@ test("_processSpanningMediaBlock should capture the media query definition", fun
   let spanningmediaQuery = `@media type (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px){body { color: green; }}`;
   let otherCSSText = `body{ background: blue' }`;
   t.equal(
-    "@media type (spanning: single-fold-vertical) and (min-width: 900px)",
+    `@media type (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px)`,
     _processSpanningMediaBlock(spanningmediaQuery + otherCSSText)[0][2]
   );
   t.end();
 });
 
 test("_processSpanningMediaBlock should capture the media query CSS content", function(t) {
-  let spanningmediaQuery = `@media type (spanning: single-fold-vertical) and (min-width: 900px){body { color: green; }}`;
+  let spanningmediaQuery = `@media type (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px){body { color: green; }}`;
   let otherCSSText = `body{ background: blue' }`;
   t.equal(
     "body { color: green; }",
@@ -46,7 +46,7 @@ test("_processSpanningMediaBlock should capture the media query CSS content", fu
 });
 
 test("_getMediaFeatures should return an array with features inside parentheses that comes after @media", function(t) {
-  let mfStr = `@media type (spanning: single-fold-vertical) and (min-width: 900px)`;
+  let mfStr = `@media type (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px)`;
   t.equal(2, _getMediaFeatures(mfStr).length);
   t.end();
 });
@@ -58,26 +58,26 @@ test("_getMediaFeatures should still return an array even tho there was no match
 });
 
 test("_getMediaFeatures matches correctly and captures the features including the ( parentheses )", function(t) {
-  let mfStr = `@media type (spanning: single-fold-vertical) and (min-width: 900px)`;
-  t.equal("(spanning: single-fold-vertical)", _getMediaFeatures(mfStr)[0]);
-  t.equal("(min-width: 900px)", _getMediaFeatures(mfStr)[1]);
+  let mfStr = `@media type (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px)`;
+  t.equal(`(${SPANNING_MF_KEY}: single-fold-vertical)`, _getMediaFeatures(mfStr)[0]);
+  t.equal(`(min-width: 900px)`, _getMediaFeatures(mfStr)[1]);
   t.end();
 });
 
 test("_getMediaTypes should return array of and capture `@media` and following media-types up until first feature parentheses", function(t) {
-  let mfStr = `@media type1 type2 (spanning: single-fold-vertical) and (min-width: 900px)`;
+  let mfStr = `@media type1 type2 (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px)`;
   t.equal(1, _getMediaTypes(mfStr).length);
   t.end();
 });
 
 test("_getMediaTypes should return an array of length 0 if there was no matches", function(t) {
-  let mfStr = `hello media type1 type2 (spanning: single-fold-vertical) and (min-width: 900px)`;
+  let mfStr = `hello media type1 type2 (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px)`;
   t.equal(0, _getMediaTypes(mfStr).length);
   t.end();
 });
 
 test("_getMediaTypes should return capture `@madia` and the following words until the first parentheses", function(t) {
-  let mfStr = `@media type1 type2 (spanning: single-fold-vertical) and (min-width: 900px)`;
+  let mfStr = `@media type1 type2 (${SPANNING_MF_KEY}: single-fold-vertical) and (min-width: 900px)`;
   t.equal(`@media type1 type2 `, _getMediaTypes(mfStr)[0]);
   t.end();
 });

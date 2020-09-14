@@ -7,7 +7,7 @@
  * constructed programmatically.
  *
  * @projectname Spanning CSS Polyfill
- * @version 1.0.10
+ * @version 2.0.0
  * @author Zouhir Chahoud
  * @author Kenneth Christiansen
  * @author Alexis Menard
@@ -68,12 +68,12 @@ if (!hasBrowserSupport) {
 }
 
 /*
- * Modified page CSS text: env(fold-*) variables replaced (spanning: *) media query features replaced
+ * Modified page CSS text: env(fold-*) variables replaced (screen-spanning: *) media query features replaced
  * grouped in this object as:
  *
- * -- single-fold-vertical: CSS found in the media feature (spanning: single-fold-vertical)
- * -- single-fold-horizontal: CSS found in the media feature (spanning: single-fold-horizontal)
- * -- none: CSS found in the media feature (spanning: none)
+ * -- single-fold-vertical: CSS found in the media feature (screen-spanning: single-fold-vertical)
+ * -- single-fold-horizontal: CSS found in the media feature (screen-spanning: single-fold-horizontal)
+ * -- none: CSS found in the media feature (screen-spanning: none)
  */
 const spanning = {
   "single-fold-horizontal": "",
@@ -83,7 +83,7 @@ const spanning = {
 
 /** Pre-processes the make the stylesheet valid.
  *
- * Strips out the CSS 'spanning' media query features and environment variables,
+ * Strips out the CSS 'screen-spanning' media query features and environment variables,
  * if not supported by the user agent, and internally stores rewritten CSS rules,
  * which will be applied according to the polyfill options.
  *
@@ -140,8 +140,8 @@ function insertSpanningStyles(element) {
   let options = feature;
 
   let spanningCSSText = element ?
-    spanning[element.nodeName.toLowerCase()][options.spanning] :
-    spanning[options.spanning];
+    spanning[element.nodeName.toLowerCase()][options.screenSpanning] :
+    spanning[options.screenSpanning];
 
   let noSpanningCSSText = element ?
     spanning[element.nodeName.toLowerCase()]["non-spanning"] : null;

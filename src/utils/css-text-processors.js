@@ -1,4 +1,4 @@
-export const SPANNING_MF_KEY = "spanning";
+export const SPANNING_MF_KEY = "screen-spanning";
 const SPANNING_MF_VAL_HOR = "single-fold-horizontal";
 const SPANNING_MF_VAL_VER = "single-fold-vertical";
 const SPANNING_MF_VAL_NONE = "none";
@@ -36,7 +36,7 @@ export function _processSpanningMediaBlock(cssText) {
 }
 
 /**
- * Replaces spanning `@media` blocks containing `spanning` feature
+ * Replaces screen-spanning `@media` blocks containing `screen-spanning` feature
  * and returns a new stylesheet string
  *
  * @param {String} originalSheetStr
@@ -96,7 +96,7 @@ export function _getMediaTypes(mediaQueryStr) {
 }
 
 /**
- * Finds all spanning media queries in CSS text and returns an object of all media
+ * Finds all screen-spanning media queries in CSS text and returns an object of all media
  * queries, grouped by type
  *
  * @param {*} cssText

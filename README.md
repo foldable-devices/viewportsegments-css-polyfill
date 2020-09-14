@@ -6,15 +6,15 @@ This is a polyfill for the [proposed](https://github.com/MicrosoftEdge/MSEdgeExp
 Web developers targeting foldable devices want to be able to effectively lay out the content in a window that spans multiple displays. CSS Foldable Display
 extensions provides a mean to do that using stylesheets.
 
-### The 'spanning' CSS media feature
+### The 'screen-spanning' CSS media feature
 
-The `spanning` CSS media feature can be used to test whether the browser window is spanning across multiple diplays.
+The `screen-spanning` CSS media feature can be used to test whether the browser window is spanning across multiple diplays.
 
 ![Figure showing 2 foldable devices with different hinge postures](https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/spanning-media-query.svg?sanitize=true)
 
 #### Syntax
 
-The `spanning` media feature value can be one of the following keywords:
+The `screen-spanning` media feature value can be one of the following keywords:
 
 - **single-fold-vertical**
 
@@ -35,7 +35,7 @@ A map application that presents a map on one window segment and search results o
 ![Foldable with the left segment of the window containing a map and the right segment containing list of search results](https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/map-app.svg?sanitize=true)
 
 ```css
-@media (spanning: single-fold-vertical) {
+@media (screen-spanning: single-fold-vertical) {
   body {
     flex-direction: row;
   }
@@ -99,8 +99,8 @@ In order to change the display configuration, you can use the polyfill together 
 
 #### Manually changing the display configuration
 
-You can update values such as `spanning`, `foldSize` and `browserShellSize` by importing the `FoldablesFeature` object. You can also subscribe to the 'change' event
-to be notified whenever the `'spanning'` media query feature or the environment variables change. That can happen due to window resizes or because the configuration values were changed programmatically.
+You can update values such as `screenSpanning`, `foldSize` and `browserShellSize` by importing the `FoldablesFeature` object. You can also subscribe to the 'change' event
+to be notified whenever the `'screenSpanning'` media query feature or the environment variables change. That can happen due to window resizes or because the configuration values were changed programmatically.
 
 ```js
   import { FoldablesFeature } from '/path/to/modules/spanning-css-polyfill/spanning-css-polyfill.js';
@@ -117,7 +117,7 @@ to be notified whenever the `'spanning'` media query feature or the environment 
   foldablesFeat.foldSize = 20;
 
   // Change multiple values by assignment; results in one update.
-  Object.assign(foldablesFeat, { foldSize: 50, spanning: "none"});
+  Object.assign(foldablesFeat, { foldSize: 50, screenSpanning: "none"});
 
   // Change multiple values in one scope; results in one update
   (function() { foldablesFeat.foldSize = 100; foldablesFeat = "single-fold-horizontal" })();
@@ -173,7 +173,7 @@ const css = sheets => {
   return rule ? rule : "* {}"; // Avoid empty rules.
 }
 
-sheet.insertRule(css`@media (spanning: single-fold-vertical) {
+sheet.insertRule(css`@media (screen-spanning: single-fold-vertical) {
   .div {
     flex: 0 0 env(fold-left);
     margin-right: env(fold-width);

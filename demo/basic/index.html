@@ -21,6 +21,7 @@
         display: flex;
         height: 100%;
         width: 100%;
+        background-color: yellow;
       }
 
       .col1 {
@@ -42,7 +43,7 @@
         content: "not spanning";
       }
 
-      @media (spanning: single-fold-vertical) {
+      @media (screen-spanning: single-fold-vertical) {
         .col1 {
           flex: 0 0 env(fold-left);
           margin-right: env(fold-width);
@@ -50,18 +51,18 @@
         }
 
         .col2 {
-          background-color: yellow;
+          background-color: green;
         }
 
         .col1:before {
-          content: "spanning single-fold-vertical";
+          content: "screen-spanning single-fold-vertical";
         }
         .col2:before {
-          content: "spanning single-fold-vertical";
+          content: "screen-spanning single-fold-vertical";
         }
       }
 
-      @media (spanning: single-fold-horizontal) {
+      @media (screen-spanning: single-fold-horizontal) {
         .wrapper {
           flex-direction: column;
         }
@@ -77,19 +78,19 @@
         }
 
         .col1:before {
-          content: "spanning single-fold-horizontal";
+          content: "screen-spanning single-fold-horizontal";
         }
         .col2:before {
-          content: "spanning single-fold-horizontal";
+          content: "screen-spanning single-fold-horizontal";
         }
       }
 
-      @media (spanning: none) {
+      @media (screen-spanning: none) {
         .col1:before {
-          content: "spanning:none";
+          content: "screen-spanning:none";
         }
         .col2:before {
-          content: "spanning:none";
+          content: "screen-spanning:none";
         }
       }
     </style>
