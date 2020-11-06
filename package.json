@@ -1,6 +1,6 @@
 {
   "name": "spanning-css-polyfill",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Polyfill for CSS spanning media query",
   "module": "build/spanning-css-polyfill.js",
   "main": "build/spanning-css-polyfill.js",
