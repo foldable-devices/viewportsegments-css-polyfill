@@ -1,18 +1,18 @@
 {
   "name": "spanning-css-polyfill",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Polyfill for CSS spanning media query",
   "module": "build/spanning-css-polyfill.js",
   "main": "build/spanning-css-polyfill.js",
   "type": "module",
   "types": "",
   "devDependencies": {
-    "concurrently": "^5.3.0",
-    "jsdoc": "^3.6.6",
-    "microbundle": "^0.12.4",
-    "serve": "^11.3.2",
-    "tape": "^5.0.1",
-    "tape-es": "^1.2.11"
+    "concurrently": "^6.2.0",
+    "jsdoc": "^3.6.7",
+    "microbundle": "^0.13.3",
+    "serve": "^12.0.0",
+    "tape": "^5.2.2",
+    "tape-es": "^1.2.15"
   },
   "scripts": {
     "build": "microbundle -f es -o build/",
@@ -35,7 +35,7 @@
   "license": "MIT",
   "repository": "https://github.com/foldable-devices/spanning-css-polyfill",
   "dependencies": {
-    "windowsegments-polyfill": "^2.0.5"
+    "windowsegments-polyfill": "^2.0.6"
   },
   "keywords": [
     "foldable",
