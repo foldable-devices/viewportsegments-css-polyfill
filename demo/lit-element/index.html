@@ -12,9 +12,16 @@
         width: 100vw;
         height: 100vh;
       }
+      button {
+        position: absolute;
+        top: 50%;
+        left: 0%;
+        z-index: 999
+      }
     </style>
   </head>
   <body>
+    <button type="button">Change viewport segments state</button>
     <test-element></test-element>
     <script type="module">
       import { html, css as litCSS, LitElement } from 'https://cdn.skypack.dev/lit-element@^2.2.1';
@@ -33,6 +40,7 @@
             display: flex;
             height: 100%;
             width: 100%;
+            background-color: yellow;
           }
 
           .col1 {
@@ -47,40 +55,82 @@
             transition: background-color .2s linear;
           }
 
-          .col1:before {
-            content: "not spanning";
-          }
-          .col2:before {
-            content: "not spanning";
+          .col3 {
+            flex: 1;
+            display: none;
+            transition: background-color .2s linear;
           }
 
-          @media (screen-spanning: single-fold-vertical) {
+          .col1:before {
+            content: "viewport segments: unsupported";
+          }
+
+          .col2:before {
+            content: "viewport segments: unsupported";
+          }
+
+          @media (horizontal-viewport-segments: 2) {
             .col1 {
-              flex: 0 0 env(fold-left);
-              margin-right: env(fold-width);
+              flex: 0 0 env(viewport-segment-right 0 0);
+              margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
               background-color: steelblue;
             }
 
             .col2 {
-              background-color: yellow;
+              background-color: green;
             }
 
             .col1:before {
-              content: "screen-spanning single-fold-vertical";
+              content: "viewport segments vertical #1";
             }
+
             .col2:before {
-              content: "screen-spanning single-fold-vertical";
+              content: "viewport segments vertical #2";
+            }
+
+            .col3 {
+              display: none;
             }
           }
 
-          @media (screen-spanning: single-fold-horizontal) {
+          @media (horizontal-viewport-segments: 3) {
+            .col1 {
+              flex: 0 0 env(viewport-segment-right 0 0);
+              margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+              background-color: steelblue;
+            }
+
+            .col2 {
+              background-color: green;
+              margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+            }
+
+            .col1:before {
+              content: "viewport segments vertical #1";
+            }
+
+            .col2:before {
+              content: "viewport segments vertical #2";
+            }
+
+            .col3:before {
+              content: "viewport segments vertical #3";
+            }
+
+            .col3 {
+              display: inline;
+              background-color: brown;
+            }
+          }
+
+          @media (vertical-viewport-segments: 2) {
             .wrapper {
               flex-direction: column;
             }
 
             .col1 {
-              flex: 0 0 env(fold-top);
-              margin-bottom: env(fold-height);
+              flex: 0 0 env(viewport-segment-bottom 0 0);
+              margin-bottom: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
               background-color: pink;
             }
 
@@ -89,19 +139,64 @@
             }
 
             .col1:before {
-              content: "screen-spanning single-fold-horizontal";
+              content: "viewport segments horizontal #1";
             }
+
             .col2:before {
-              content: "screen-spanning single-fold-horizontal";
+              content: "viewport segments horizontal #1";
+            }
+
+            .col3 {
+              display: none;
             }
           }
 
-          @media (screen-spanning: none) {
-            .col1:before {
-              content: "screen-spanning:none";
+          @media (vertical-viewport-segments: 3) {
+            .wrapper {
+              flex-direction: column;
             }
+
+            .col1 {
+              flex: 0 0 env(viewport-segment-bottom 0 0);
+              margin-bottom: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
+              background-color: pink;
+            }
+
+            .col2 {
+              background-color: seagreen;
+              margin-bottom: calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0));
+            }
+
+            .col3 {
+              display: inline;
+              background-color: peru;
+            }
+
+            .col1:before {
+              content: "viewport segments horizontal #1";
+            }
+
             .col2:before {
-              content: "screen-spanning:none";
+              content: "viewport segments horizontal #2";
+            }
+
+            .col3:before {
+              content: "viewport segments horizontal #3";
+            }
+
+          }
+
+          @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1) {
+            .col1:before {
+              content: "viewport segments single segment";
+            }
+
+            .col2:before {
+              content: "viewport segments single segment";
+            }
+
+            .col3 {
+              display: none;
             }
           }
         `;
@@ -110,6 +205,20 @@
           super.connectedCallback();
           feat.addEventListener('change', () =>  this.requestUpdate());
           observe(this);
+
+          const hasBrowserSupport =
+            window.matchMedia('(vertical-viewport-segments)').matches ||
+            window.matchMedia('(horizontal-viewport-segments)').matches || false;
+          const button = document.querySelector('button');
+          if (!hasBrowserSupport) {
+            const foldablesFeat = new FoldablesFeature;
+            foldablesFeat.foldSize = 24;
+            button.addEventListener('click', _ => {
+              foldablesFeat.randomizeSegmentsConfiguration(3);
+            });
+          } else {
+            button.style.display = 'none';
+          }
         }
 
         render() {
@@ -117,11 +226,13 @@
             <div class="wrapper">
               <div class="col1">
                 <h2>Configuration</h2>
-                screenSpanning: ${feat.screenSpanning}<br>
+                horizontalViewportSegments: ${feat.verticalViewportSegments}<br>
+                verticalViewportSegments: ${feat.horizontalViewportSegments}<br>
                 foldSize: ${feat.foldSize}<br>
                 browserShellSize: ${feat.browserShellSize}
               </div>
               <div class="col2"></div>
+              <div class="col3"></div>
             </div>
           `;
         }

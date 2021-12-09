@@ -1,35 +1,34 @@
 /**
- * This is the documentation for the CSS spanning polyfill.
+ * This is the documentation for the CSS Viewport Segments polyfill.
  *
  * The polyfill processes global stylesheets (link or inline)
  * automatically, but provides a few methods that allows for
  * the polyfill to work with shadow root or when CSS is
  * constructed programmatically.
  *
- * @projectname Spanning CSS Polyfill
- * @version 2.0.1
+ * @projectname Viewport Segments CSS Polyfill
+ * @version 1.0.0
  * @author Zouhir Chahoud
  * @author Kenneth Christiansen
  * @author Alexis Menard
- * @copyright 2020
+ * @copyright 2021
  *
  */
 
-import { FoldablesFeature } from "../node_modules/windowsegments-polyfill/build/windowsegments-polyfill.js";
+import { FoldablesFeature } from "../node_modules/viewportsegments-polyfill/build/viewportsegments-polyfill.js";
 export { FoldablesFeature };
 
 import {
-  getSpanningCSSText,
-  replaceSpanningMediaBlocks,
+  getViewportSegmentCSSText,
+  replaceViewportSegmentsMediaBlocks,
   replaceCSSEnvVariables
 } from "./utils/css-text-processors.js";
 
 const hasBrowserSupport =
-  window.matchMedia('(screen-spanning: single-fold-horizontal)').matches ||
-  window.matchMedia('(screen-spanning: single-fold-vertical)').matches ||
-  window.matchMedia('(screen-spanning: none)').matches || false;
+  window.matchMedia('(vertical-viewport-segments)').matches ||
+  window.matchMedia('(horizontal-viewport-segments)').matches || false;
 
-console.info(`CSS Spanning Media Queries are supported? ${hasBrowserSupport}`);
+console.info(`CSS Viewport Segments are supported? ${hasBrowserSupport}`);
 
 let feature = new FoldablesFeature();
 
@@ -45,17 +44,21 @@ if (!hasBrowserSupport) {
   fetchCSSText(cssElements).then(sheetsTextContentArray => {
     const styleFragment = new DocumentFragment();
     sheetsTextContentArray.forEach((sheet, i) => {
-      const noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
-      const spanningCSS = getSpanningCSSText(sheet);
+      const noViewportSegments = replaceViewportSegmentsMediaBlocks(sheet, "");
+      const viewportSegmentCSS = getViewportSegmentCSSText(sheet);
 
       const sheetOrigin = cssElements[i].href || "inline";
-      for (let [key, value] of Object.entries(spanningCSS)) {
-        spanning[key] += `/* origin: ${sheetOrigin} */${value}`;
+      for (let [key, value] of Object.entries(viewportSegmentCSS)) {
+        if (viewportSegments[key] == undefined)
+          viewportSegments[key]= [];
+        for (let [key2, value2] of Object.entries(value)) {
+          viewportSegments[key][key2] = `/* origin: ${sheetOrigin} */${value2}`;
+        };
       };
 
       const element = document.createElement("style");
       element.setAttribute("data-css-origin", sheetOrigin);
-      element.textContent = noSpanningCSS;
+      element.textContent = noViewportSegments;
       styleFragment.appendChild(element);
     });
 
@@ -68,22 +71,16 @@ if (!hasBrowserSupport) {
 }
 
 /*
- * Modified page CSS text: env(fold-*) variables replaced (screen-spanning: *) media query features replaced
- * grouped in this object as:
- *
- * -- single-fold-vertical: CSS found in the media feature (screen-spanning: single-fold-vertical)
- * -- single-fold-horizontal: CSS found in the media feature (screen-spanning: single-fold-horizontal)
- * -- none: CSS found in the media feature (screen-spanning: none)
+ * Modified page CSS text: env(viewport-segment-*) variables replaced (*-viewport-segments: *) media query features replaced
+ * grouped in this object as: [vertical-viewport-segments-#][horizontal-viewport-segments-#]
+ * In other words, accessing the CSS text for directives like @media (horizontal-viewport-segments: 1) and (vertical-viewport-segments: 1)
+ * is viewportSegments[1][1] or @media (horizontal-viewport-segments: 3) would be viewportSegments[1][3].
  */
-const spanning = {
-  "single-fold-horizontal": "",
-  "single-fold-vertical": "",
-  "none": ""
-};
+const viewportSegments = [[]];
 
 /** Pre-processes the make the stylesheet valid.
  *
- * Strips out the CSS 'screen-spanning' media query features and environment variables,
+ * Strips out the CSS '*-viewport-segments' media query features and environment variables,
  * if not supported by the user agent, and internally stores rewritten CSS rules,
  * which will be applied according to the polyfill options.
  *
@@ -97,25 +94,26 @@ export function adjustCSS(sheet, elementName) {
   if (hasBrowserSupport) {
     return sheet;
   }
-  const noSpanningCSS = replaceSpanningMediaBlocks(sheet, "");
-  const spanningCSS = getSpanningCSSText(sheet);
+  const noViewportSegments = replaceViewportSegmentsMediaBlocks(sheet, "");
+  const viewportSegmentCSS = getViewportSegmentCSSText(sheet);
 
   if (elementName) {
-    spanning[elementName] = {
-      "single-fold-horizontal": "",
-      "single-fold-vertical": "",
-      "none": ""
-    };
+    viewportSegments[elementName] = [[]];
   }
 
-  const _spanning = elementName ? spanning[elementName] : spanning;
+  const actualViewportSegments = elementName ? viewportSegments[elementName] : viewportSegments;
   const sheetOrigin = elementName ? '' : "/* origin: inline */";
-  for (let [key, value] of Object.entries(spanningCSS)) {
-    _spanning[key] += `${sheetOrigin}${value}`;
+  for (let [verticalSegmentId, verticalSegmentsArray] of Object.entries(viewportSegmentCSS)) {
+    if (actualViewportSegments[verticalSegmentId] == undefined) {
+      actualViewportSegments[verticalSegmentId]= [];
+    }
+    for (let [horizontalSegmentId, horizontalSegmentsArray] of Object.entries(verticalSegmentsArray)) {
+      actualViewportSegments[verticalSegmentId][horizontalSegmentId] = `${sheetOrigin}${horizontalSegmentsArray}`;
+    };
   };
 
-  _spanning["non-spanning"] = noSpanningCSS;
-  return noSpanningCSS;
+  actualViewportSegments[0][0] = noViewportSegments;
+  return noViewportSegments;
 }
 
 /** Observe and respond to changes affecting the polyfilled features.
@@ -132,27 +130,41 @@ export function observe(element) {
   if (hasBrowserSupport) {
     return;
   }
-  insertSpanningStyles(element);
-  feature.addEventListener("change", () => insertSpanningStyles(element));
+  insertViewportSegmentsStyles(element);
+  feature.addEventListener("change", () => insertViewportSegmentsStyles(element));
 }
 
-function insertSpanningStyles(element) {
+function insertViewportSegmentsStyles(element) {
   let options = feature;
+  let viewportSegmentsDefinitions;
+  if (element) {
+    viewportSegmentsDefinitions = viewportSegments[element.nodeName.toLowerCase()];
+  } else {
+    viewportSegmentsDefinitions = viewportSegments;
+  }
 
-  let spanningCSSText = element ?
-    spanning[element.nodeName.toLowerCase()][options.screenSpanning] :
-    spanning[options.screenSpanning];
+  let viewportSegmentCSSText = null;
+  if(viewportSegmentsDefinitions[options.verticalViewportSegments]) {
+    viewportSegmentCSSText = viewportSegmentsDefinitions[options.verticalViewportSegments][options.horizontalViewportSegments];
+  }
 
-  let noSpanningCSSText = element ?
-    spanning[element.nodeName.toLowerCase()]["non-spanning"] : null;
+  let noViewportSegmentsText = viewportSegmentsDefinitions[0][0] ? viewportSegmentsDefinitions[0][0] : null;
 
-  const segments = feature.getSegments();
-  // FIXME: Handle CSS environment variables fallback in this case.
-  const fold = segments.length === 1 ? {} : segments[1];
+  if (!viewportSegmentCSSText) {
+    return;
+  }
 
-  for (let [key, value] of Object.entries(fold)) {
-    spanningCSSText = replaceCSSEnvVariables(spanningCSSText, `fold-${key}`, `${value}px`);
-  };
+  const segments = window.visualViewport.segments();
+  const areViewportSegmentsVertical = !(segments[0].height < window.innerHeight);
+  for (let [segmentId, segment] of Object.entries(segments)) {
+    for (let [edge, edgeValue] of Object.entries(segment)) {
+      if (areViewportSegmentsVertical) {
+        viewportSegmentCSSText = replaceCSSEnvVariables(viewportSegmentCSSText, `viewport-segment-${edge} ${segmentId} 0`, `${edgeValue}px`);
+      } else {
+        viewportSegmentCSSText = replaceCSSEnvVariables(viewportSegmentCSSText, `viewport-segment-${edge} 0 ${segmentId}`, `${edgeValue}px`);
+      }
+    };
+  }
 
   const ns = "__foldables_sheet__";
   const replace = (target, sheet) => {
@@ -168,11 +180,11 @@ function insertSpanningStyles(element) {
   if (element) {
     const shadowRoot = element.shadowRoot;
     if ("adoptedStyleSheets" in shadowRoot && shadowRoot.adoptedStyleSheets.length > 0) {
-      shadowRoot.adoptedStyleSheets[0].replace(noSpanningCSSText + spanningCSSText);
+      shadowRoot.adoptedStyleSheets[0].replace(noViewportSegmentsText + viewportSegmentCSSText);
     } else {
-      replace(shadowRoot, spanningCSSText);
+      replace(shadowRoot, viewportSegmentCSSText);
     }
   } else {
-    replace(document, spanningCSSText)
+    replace(document, viewportSegmentCSSText)
   }
 }
