@@ -43,37 +43,27 @@
 
 
     <section>
-        <article><h1>CSS Foldable Display polyfill</h1>
-<p>This is a polyfill for the <a href="https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/master/Foldables/explainer.md">proposed</a> CSS Foldable Display extensions.</p>
-<p>Web developers targeting foldable devices want to be able to effectively lay out the content in a window that spans multiple displays. CSS Foldable Display
-extensions provides a mean to do that using stylesheets.</p>
-<h3>The 'screen-spanning' CSS media feature</h3>
-<p>The <code>screen-spanning</code> CSS media feature can be used to test whether the browser window is spanning across multiple diplays.</p>
-<p><img src="https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/spanning-media-query.svg?sanitize=true" alt="Figure showing 2 foldable devices with different hinge postures"></p>
+        <article><h1>CSS Viewport Segments polyfill</h1>
+<p>This is a polyfill for the <a href="https://drafts.csswg.org/mediaqueries-5/#descdef-media-horizontal-viewport-segments">proposed</a> CSS Viewport Segments.</p>
+<p>Web developers targeting foldable devices want to be able to effectively lay out the content in a window that spans multiple displays. CSS Viewport Segments provides a mean to do that using stylesheets.</p>
+<h3>The 'horizontal-viewport-segments' and 'horizontal-viewport-segments' CSS media features</h3>
+<p>A display can consist of virtual segments (Windows Zones, foldable displays) or simply have segments because the display is made up of multiple physical displays like dual screen devices. The 'horizontal-viewport-segments' and 'horizontal-viewport-segments' CSS media features can be used to test whether the browser window is displayed across multiple segments.</p>
+<p><img src="https://raw.githubusercontent.com/foldable-devices/viewportsegments-css-polyfill/master/images/duo-postures.png" alt="Figure showing 2 foldable devices with different hinge postures"></p>
 <h4>Syntax</h4>
-<p>The <code>screen-spanning</code> media feature value can be one of the following keywords:</p>
-<ul>
-<li><strong>single-fold-vertical</strong></li>
-</ul>
-<p>This value matches when the layout viewport is spanning a single fold (two screens) and the fold posture is vertical.</p>
-<ul>
-<li><strong>single-fold-horizontal</strong></li>
-</ul>
-<p>This value matches when the layout viewport is spanning a single fold (two screens) and the fold posture is horizontal.</p>
-<ul>
-<li><strong>none</strong></li>
-</ul>
-<p>This value describes the state of when the browser window is not in spanning mode.</p>
+<p>The 'horizontal-viewport-segments' and 'horizontal-viewport-segments' media feature value represents the number of vertical
+or horizontal segments.</p>
+<p>Using <a href="https://drafts.csswg.org/css-env-1/#viewport-segments">CSS viewport segments</a> environment variables you can get informations about each of the segments using the two dimensions.</p>
+<p>For more information please look at the following <a href="https://docs.microsoft.com/en-us/dual-screen/web/css-viewport-segments">article</a> from Microsoft.</p>
 <h4>Example</h4>
 <p>A map application that presents a map on one window segment and search results on another</p>
-<p><img src="https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/map-app.svg?sanitize=true" alt="Foldable with the left segment of the window containing a map and the right segment containing list of search results"></p>
-<pre class="prettyprint source lang-css"><code>@media (screen-spanning: single-fold-vertical) {
+<p><img src="https://raw.githubusercontent.com/foldable-devices/viewportsegments-css-polyfill/master/images/map-app.svg?sanitize=true" alt="Foldable with the left segment of the window containing a map and the right segment containing list of search results"></p>
+<pre class="prettyprint source lang-css"><code>@media (vertical-viewport-segments: 2) {
   body {
     flex-direction: row;
   }
 
   .map {
-    flex: 1 1 env(fold-left)
+    flex: 1 1 env(viewport-segment-width 0 0);
   }
 
   .locations-list {
@@ -81,28 +71,32 @@ extensions provides a mean to do that using stylesheets.</p>
   }
 }
 </code></pre>
-<h3>Device fold CSS environment variables</h3>
+<h3>Viewport Segments CSS Variables</h3>
 <p>There are 4 pre-defined CSS environment variables, which can be used to calculate each screen segment size at both landscape and portrait orientations.</p>
 <ul>
-<li><strong>fold-top</strong></li>
-<li><strong>fold-left</strong></li>
-<li><strong>fold-width</strong></li>
-<li><strong>fold-height</strong></li>
+<li><strong>viewport-segment-top [x][y]</strong></li>
+<li><strong>viewport-segment-left [x][y]</strong></li>
+<li><strong>viewport-segment-bottom [x][y]</strong></li>
+<li><strong>viewport-segment-right [x][y]</strong></li>
+<li><strong>viewport-segment-width [x][y]</strong></li>
+<li><strong>viewport-segment-height [x][y]</strong></li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/foldable-devices/spanning-css-polyfill/master/images/css-env-variables.svg?sanitize=true" alt="predefined environment variables"></p>
-<p>While the spanning media query guarantees there is only a single hinge and two screen segments, developers must not take a dependency that each screen segment is 50% of the viewport height or width, as that may not always be the case.</p>
+<p>The coordinates are assigned from the top-left segment:</p>
+<p><img src="https://raw.githubusercontent.com/foldable-devices/viewportsegments-css-polyfill/master/images/env-variables-coordinate-grid.png" alt="Diagram explaining how the coordinates work, from top left"></p>
+<p>Using these variables you can calculate and layout your content. Here is a diagram to clarify:</p>
+<p><img src="https://raw.githubusercontent.com/foldable-devices/viewportsegments-css-polyfill/images/env-variables-update.png" alt="Diagram showing how to calculate the hinge geometry"></p>
 <p>The values of these variables are CSS pixels, and are relative to the layout viewport (i.e. are in the <a href="https://drafts.csswg.org/cssom-view/#dom-mouseevent-clientx">client coordinates, as defined by CSSOM Views</a>).</p>
-<p>When evaluated while not in one of the spanning states, these values will be treated as if they don't exist, and use the fallback value as passed to the <code>env()</code> function.</p>
+<p>When evaluated while not in one of non standard viewport segment states (more than one vertical or horizontal segment), these values will be treated as if they don't exist, and use the fallback value as passed to the <code>env()</code> function.</p>
 <h1>How to use the polyfill</h1>
-<p>This polyfill is packaged as a JavaScript module. It is available on NPM over <a href="https://www.npmjs.com/package/spanning-css-polyfill">here</a>.</p>
+<p>This polyfill is packaged as a JavaScript module. It is available on NPM over <a href="https://www.npmjs.com/package/viewportsegments-css-polyfill">here</a>.</p>
 <p>To install the polyfill just run:</p>
-<pre class="prettyprint source lang-bash"><code>npm install --save spanning-css-polyfill
+<pre class="prettyprint source lang-bash"><code>npm install --save viewportsegments-css-polyfill
 </code></pre>
 <p>Then you can include it in your project:</p>
-<pre class="prettyprint source lang-html"><code>&lt;script type=&quot;module&quot; src=&quot;/path/to/modules/spanning-css-polyfill.js&quot;>&lt;/script>
+<pre class="prettyprint source lang-html"><code>&lt;script type=&quot;module&quot; src=&quot;/path/to/modules/viewportsegments-css-polyfill.js&quot;>&lt;/script>
 </code></pre>
 <p>or in your JavaScript source file</p>
-<pre class="prettyprint source lang-js"><code>import &quot;/path/to/modules/spanning-css-polyfill/spanning-css-polyfill.js&quot;;
+<pre class="prettyprint source lang-js"><code>import &quot;/path/to/modules/viewportsegments-css-polyfill/viewportsegments-css-polyfill.js&quot;;
 </code></pre>
 <p>and start using the new CSS features.</p>
 <ul>
@@ -110,9 +104,9 @@ extensions provides a mean to do that using stylesheets.</p>
 </ul>
 <p>In order to change the display configuration, you can use the polyfill together with an emulator or you can change the settings manually. The settings are stored across sessions.</p>
 <h4>Manually changing the display configuration</h4>
-<p>You can update values such as <code>screenSpanning</code>, <code>foldSize</code> and <code>browserShellSize</code> by importing the <code>FoldablesFeature</code> object. You can also subscribe to the 'change' event
-to be notified whenever the <code>'screenSpanning'</code> media query feature or the environment variables change. That can happen due to window resizes or because the configuration values were changed programmatically.</p>
-<pre class="prettyprint source lang-js"><code>  import { FoldablesFeature } from '/path/to/modules/spanning-css-polyfill/spanning-css-polyfill.js';
+<p>You can update values such as <code>verticalViewportSegments</code>, <code>horizontalViewportSegments</code>, <code>foldSize</code> and <code>browserShellSize</code> by importing the <code>FoldablesFeature</code> object. You can also subscribe to the 'change' event
+to be notified whenever the <code>'verticalViewportSegments'</code> or <code>'horizontalViewportSegments'</code> media query feature or the environment variables change. That can happen due to window resizes or because the configuration values were changed programmatically.</p>
+<pre class="prettyprint source lang-js"><code>  import { FoldablesFeature } from '/path/to/modules/viewportsegments-css-polyfill/viewportsegments-css-polyfill.js';
 
   const foldablesFeat = new FoldablesFeature;
 
@@ -126,15 +120,15 @@ to be notified whenever the <code>'screenSpanning'</code> media query feature or
   foldablesFeat.foldSize = 20;
 
   // Change multiple values by assignment; results in one update.
-  Object.assign(foldablesFeat, { foldSize: 50, screenSpanning: &quot;none&quot;});
+  Object.assign(foldablesFeat, { foldSize: 50, verticalViewportSegments: &quot;2&quot;});
 
   // Change multiple values in one scope; results in one update
-  (function() { foldablesFeat.foldSize = 100; foldablesFeat = &quot;single-fold-horizontal&quot; })();
+  (function() { foldablesFeat.foldSize = 100; foldablesFeat.verticalViewportSegments = &quot;2&quot; })();
 </code></pre>
 <h4>Special note on web components and <a href="https://lit-element.polymer-project.org/">lit-element</a></h4>
 <p>In order for the polyfill to work with web components and <a href="https://lit-element.polymer-project.org/">lit-element</a>, a bit of extra work is needed. There are a couple of examples in the <code>demo/</code> directory.</p>
 <p>The polyfill provides two methods, one to register and one to observe and adjust to updates.</p>
-<pre class="prettyprint source lang-js"><code>import { adjustCSS, observe } from &quot;spanning-css-polyfill/spanning-css-polyfill.js&quot;;
+<pre class="prettyprint source lang-js"><code>import { adjustCSS, observe } from &quot;viewportsegments-css-polyfill/viewportsegments-css-polyfill.js&quot;;
 </code></pre>
 <p>In the constructor of your web component make sure to pre-process and make the CSS browser valid by calling the <code>adjustCSS</code> method:</p>
 <pre class="prettyprint source lang-js"><code>let sheet = shadowRoot.querySelector(&quot;style&quot;);
@@ -148,7 +142,7 @@ sheet.innerText = adjustCSS(sheet.innerText, &quot;test-element&quot;);
 <p>Please note that if connectedCallback() exists on the parent, don't forget to call <code>super.connectedCallback()</code>.</p>
 <p>For lit-element, a bit of extra work is needed if you're styling your element with the <code>css</code> template literal (which is the recommended way).</p>
 <pre class="prettyprint source lang-js"><code>import { html, css as litCSS, LitElement } from 'https://cdn.pika.dev/lit-element@^2.2.1';
-import { adjustCSS, observe } from &quot;spanning-css-polyfill/spanning-css-polyfill.js&quot;;
+import { adjustCSS, observe } from &quot;viewportsegments-css-polyfill/viewportsegments-css-polyfill.js&quot;;
 
 const css = (strings, ...values) => {
   const string = adjustCSS(strings[0], &quot;test-element&quot;);
@@ -158,29 +152,29 @@ const css = (strings, ...values) => {
 <p>The <code>observe</code> method is also needed (see above).</p>
 <h4>Special note for handling of stylesheets manually constructed from CSS rules</h4>
 <p>If you build your CSS style sheets in JavaScript, the polyfill can't automatically convert your style sheets. However you can do something like this:</p>
-<pre class="prettyprint source lang-js"><code>import { adjustCSS, observe } from &quot;spanning-css-polyfill/spanning-css-polyfill.js&quot;;
+<pre class="prettyprint source lang-js"><code>import { adjustCSS, observe } from &quot;viewportsegments-css-polyfill/viewportsegments-css-polyfill.js&quot;;
 
 const css = sheets => {
   const rule = adjustCSS(sheets[0]);
   return rule ? rule : &quot;* {}&quot;; // Avoid empty rules.
 }
 
-sheet.insertRule(css`@media (screen-spanning: single-fold-vertical) {
+sheet.insertRule(css`@media (horizontal-viewport-segments: 2) {
   .div {
-    flex: 0 0 env(fold-left);
-    margin-right: env(fold-width);
+    flex: 0 0 env(viewport-segment-height 0 0);
+    margin-bottom: calc(env(viewport-segment-top 0 1) - env(viewport-segment-height 0 1));
     background-color: steelblue;
   }
 }`, sheet.cssRules.length);
 </code></pre>
 <h1>Documentation</h1>
-<p>Located <a href="https://foldable-devices.github.io/spanning-css-polyfill/global.html">here</a>.</p>
+<p>Located <a href="https://foldable-devices.github.io/viewportsegments-css-polyfill/global.html">here</a>.</p>
 <h1>Demos</h1>
 <p>Head over <a href="https://github.com/foldable-devices/demos">here</a>.</p>
 <h1>Test suite</h1>
 <p>There are unfortunately no <a href="https://github.com/w3c/web-platform-tests/">web-platform-tests</a> available yet.</p>
 <h1>Known issues</h1>
-<p>Check GitHub <a href="https://github.com/foldable-devices/spanning-css-polyfill/issues">here</a>.</p>
+<p>Check GitHub <a href="https://github.com/foldable-devices/viewportsegments-css-polyfill/issues">here</a>.</p>
 <h1>Learn more</h1>
 <ul>
 <li><a href="https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/master/Foldables/explainer.md">Explainer</a> - a document explaining how this feature was designed and how it fits together with other APIs.</li>
@@ -201,7 +195,7 @@ sheet.insertRule(css`@media (screen-spanning: single-fold-vertical) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jun 15 2021 10:14:57 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Fri Dec 10 2021 11:05:36 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,18 +1,18 @@
 {
-  "name": "spanning-css-polyfill",
-  "version": "2.0.7",
-  "description": "Polyfill for CSS spanning media query",
-  "module": "build/spanning-css-polyfill.js",
-  "main": "build/spanning-css-polyfill.js",
+  "name": "viewportsegments-css-polyfill",
+  "version": "1.0.0",
+  "description": "Polyfill for CSS viewport segments media query",
+  "module": "build/viewportsegments-css-polyfill.js",
+  "main": "build/viewportsegments-css-polyfill.js",
   "type": "module",
   "types": "",
   "devDependencies": {
-    "concurrently": "^6.2.0",
+    "concurrently": "^6.3.0",
     "jsdoc": "^3.6.7",
-    "microbundle": "^0.13.3",
-    "serve": "^12.0.0",
-    "tape": "^5.2.2",
-    "tape-es": "^1.2.15"
+    "microbundle": "^0.14.1",
+    "serve": "^13.0.2",
+    "tape": "^5.3.1",
+    "tape-es": "^1.2.16"
   },
   "scripts": {
     "build": "microbundle -f es -o build/",
@@ -28,14 +28,13 @@
     "!/docs/"
   ],
   "author": {
-    "name": "Zouhir Chahoud",
-    "email": "zouhir@zouhir.org",
-    "url": "https://zouhir.org/"
+    "name": "Alexis Menard",
+    "email": "alexis.menard@intel.com"
   },
   "license": "MIT",
-  "repository": "https://github.com/foldable-devices/spanning-css-polyfill",
+  "repository": "https://github.com/foldable-devices/viewportsegments-css-polyfill",
   "dependencies": {
-    "windowsegments-polyfill": "^2.0.6"
+    "viewportsegments-polyfill": "^1.0.0"
   },
   "keywords": [
     "foldable",
