@@ -154,8 +154,10 @@ function insertViewportSegmentsStyles(element) {
     return;
   }
 
-  const segments = window.visualViewport.segments();
-  const areViewportSegmentsVertical = !(segments[0].height < window.innerHeight);
+  const segments = window.visualViewport.segments;
+  let areViewportSegmentsVertical = false;
+  if (segments.length > 1)
+    areViewportSegmentsVertical = !(segments[0].height < window.innerHeight);
   for (let [segmentId, segment] of Object.entries(segments)) {
     for (let [edge, edgeValue] of Object.entries(segment)) {
       if (areViewportSegmentsVertical) {
