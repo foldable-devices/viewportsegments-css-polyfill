@@ -1,6 +1,6 @@
 {
   "name": "viewportsegments-css-polyfill",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Polyfill for CSS viewport segments media query",
   "module": "build/viewportsegments-css-polyfill.js",
   "main": "build/viewportsegments-css-polyfill.js",
