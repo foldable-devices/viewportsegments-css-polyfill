@@ -20,6 +20,7 @@ export { FoldablesFeature };
 
 import {
   getViewportSegmentCSSText,
+  hasViewportSegmentsMediaBlocks,
   replaceViewportSegmentsMediaBlocks,
   replaceCSSEnvVariables
 } from "./utils/css-text-processors.js";
@@ -56,10 +57,18 @@ if (!hasBrowserSupport) {
         };
       };
 
-      const element = document.createElement("style");
-      element.setAttribute("data-css-origin", sheetOrigin);
-      element.textContent = noViewportSegments;
-      styleFragment.appendChild(element);
+      if (sheetOrigin != 'inline' && !hasViewportSegmentsMediaBlocks(sheet)) {
+        const link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = sheetOrigin;
+        styleFragment.appendChild(link);
+      } else {
+        const element = document.createElement("style");
+        element.setAttribute("data-css-origin", sheetOrigin);
+        element.textContent = noViewportSegments;
+        styleFragment.appendChild(element);
+      }
     });
 
     cssElements.forEach(el => el.parentElement != null && el.parentElement.removeChild(el));

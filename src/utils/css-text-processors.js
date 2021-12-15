@@ -34,6 +34,11 @@ export function _processViewportSegmentsMediaBlock(cssText) {
   return viewportSegmentMediaBlocks;
 }
 
+export function hasViewportSegmentsMediaBlocks(originalSheetStr) {
+    const regEx = new RegExp(VIEWPORT_SEGMENT_MEDIA_BLOCK_REGEXP_STR, "gi");
+    return regEx.test(originalSheetStr)
+}
+
 /**
  * Replaces *-viewport-segments `@media` blocks containing `*-viewport-segments` feature
  * and returns a new stylesheet string
