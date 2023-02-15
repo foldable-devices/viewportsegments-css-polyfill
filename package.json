@@ -1,17 +1,17 @@
 {
   "name": "viewportsegments-css-polyfill",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Polyfill for CSS viewport segments media query",
   "module": "build/viewportsegments-css-polyfill.js",
   "main": "build/viewportsegments-css-polyfill.js",
   "type": "module",
   "types": "",
   "devDependencies": {
-    "concurrently": "^6.3.0",
-    "jsdoc": "^3.6.7",
-    "microbundle": "^0.14.1",
-    "serve": "^13.0.2",
-    "tape": "^5.3.1",
+    "concurrently": "^7.6.0",
+    "jsdoc": "^4.0.0",
+    "microbundle": "^0.15.1",
+    "serve": "^14.2.0",
+    "tape": "^5.6.3",
     "tape-es": "^1.2.16"
   },
   "scripts": {
@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": "https://github.com/foldable-devices/viewportsegments-css-polyfill",
   "dependencies": {
-    "viewportsegments-polyfill": "^1.0.2"
+    "viewportsegments-polyfill": "^1.0.3"
   },
   "keywords": [
     "foldable",
