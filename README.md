@@ -3,7 +3,7 @@ CSS Viewport Segments polyfill
 
 This is a polyfill for the [proposed](https://drafts.csswg.org/mediaqueries-5/#descdef-media-horizontal-viewport-segments) CSS Viewport Segments.
 
-Web developers targeting foldable devices want to be able to effectively lay out the content in a window that spans multiple displays. CSS Viewport Segments provides a mean to do that using stylesheets.
+Web developers targeting foldable devices want to be able to effectively lay out the content in a window that spans multiple displays. CSS Viewport Segments provides the means to do that using stylesheets.
 
 ### The 'horizontal-viewport-segments' and 'horizontal-viewport-segments' CSS media features
 
